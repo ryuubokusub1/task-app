@@ -500,12 +500,10 @@ function renderTasks() {
   
   let filtered = allTasksCache;
 
-  // 1. タブによる絞り込み
   if (currentStatusTab !== "すべて") {
     filtered = filtered.filter(t => t.status === currentStatusTab);
   }
 
-  // 2. マスタユーザーの選択による絞り込み
   if (currentUser.role === "admin") {
     const selectedUser = document.getElementById("user-select").value;
     if (selectedUser !== "ALL") {
@@ -513,7 +511,6 @@ function renderTasks() {
     }
   }
 
-  // 3. 検索窓のキーワードによる絞り込み
   if (searchQuery) {
     filtered = filtered.filter(t => t.title && t.title.toLowerCase().includes(searchQuery));
   }
@@ -531,10 +528,11 @@ function renderTasks() {
     const ownerText = currentUser.role === "admin" ? `<small style="color:var(--text-muted);">(${escapeHtml(task.username || task.userId)})</small> ` : "";
     const isCompleted = task.status === '完了';
 
+    // ボタンのテキストと動作を正しく分離
     item.innerHTML = `
       <span>${ownerText}${escapeHtml(task.title)}</span>
       <button class="${isCompleted ? 'btn-secondary' : ''}" onclick="toggleTaskStatusLocal('${task.id}', '${task.status}')">
-        ${isCompleted ? '未完了に戻す' : '✓ 完了'}
+        ${isCompleted ? '未完了に戻す' : '完了にする'}
       </button>
     `;
     taskListDiv.appendChild(item);
