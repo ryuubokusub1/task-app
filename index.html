@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>タスク管理アプリ - ログイン</title>
+  <style>
+    body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
+    .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 300px; }
+    h2 { margin-top: 0; text-align: center; color: #333; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; color: #666; font-size: 14px; }
+    input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+    button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+    button:hover { background: #0056b3; }
+    #message { margin-top: 15px; font-size: 14px; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>ログイン</h2>
+    <div class="form-group">
+      <label>ユーザー名</label>
+      <input type="text" id="username" value="admin">
+    </div>
+    <div class="form-group">
+      <label>パスワード</label>
+      <input type="password" id="password" value="admin123">
+    </div>
+    <button onclick="login()">ログイン</button>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    // ★ご自身のGASの「ウェブアプリ URL」に書き換えてください！
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwrujO1lvSsyCSYRpcbLxoLHhkziiVouQo4LQvK23QejUfYGCLEUuJNfxUJurGSTQuy/exec";
+
+    async function login() {
+      const usernameInput = document.getElementById("username").value;
+      const passwordInput = document.getElementById("password").value;
+      const messageDiv = document.getElementById("message");
+
+      messageDiv.style.color = "#333";
+      messageDiv.innerText = "通信中...";
+
+      try {
+        const response = await fetch(GAS_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "login",
+            username: usernameInput,
+            password: passwordInput
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.status === "success") {
+          messageDiv.style.color = "green";
+          messageDiv.innerText = `ログイン成功！ ようこそ ${data.user.username} 様`;
+          
+          // ログイン情報をブラウザに保存（セッション管理）
+          sessionStorage.setItem("user", JSON.stringify(data.user));
+          sessionStorage.setItem("token", data.token);
+
+        } else {
+          messageDiv.style.color = "red";
+          messageDiv.innerText = data.message;
+        }
+      } catch (err) {
+        messageDiv.style.color = "red";
+        messageDiv.innerText = "エラーが発生しました: " + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
