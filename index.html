@@ -4,20 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>タスク管理アプリ</title>
-  <style>
 <style>
     :root {
-      --primary-color: #4f46e5;
-      --primary-hover: #4338ca;
-      --bg-color: #f3f4f6;
+      --primary-color: #3b82f6;
+      --primary-hover: #2563eb;
+      --bg-color: #f8fafc;
       --card-bg: #ffffff;
-      --text-main: #1f2937;
-      --text-muted: #6b7280;
-      --border-color: #e5e7eb;
+      --text-main: #111827;      /* くっきり見える濃い文字色 */
+      --text-muted: #4b5563;     /* 補足用テキスト */
+      --border-color: #cbd5e1;   /* 視認性の高い枠線 */
+      --input-bg: #ffffff;
       --danger-color: #ef4444;
       --danger-hover: #dc2626;
-      --radius: 12px;
-      --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+      --radius: 10px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
     }
 
     * { box-sizing: border-box; }
@@ -38,6 +38,7 @@
       padding: 24px;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
       width: 100%;
       max-width: 600px;
       height: fit-content;
@@ -46,53 +47,51 @@
     h2, h3 {
       margin-top: 0;
       color: var(--text-main);
-      font-weight: 600;
+      font-weight: 700;
     }
 
-    h2 { font-size: 1.5rem; text-align: center; margin-bottom: 20px; }
-    h3 { font-size: 1.1rem; margin-bottom: 12px; }
+    h2 { font-size: 1.4rem; text-align: center; margin-bottom: 20px; }
+    h3 { font-size: 1.05rem; margin-bottom: 12px; }
 
     .form-group { margin-bottom: 16px; }
-    label { display: block; margin-bottom: 6px; color: var(--text-muted); font-size: 0.875rem; }
+    label { display: block; margin-bottom: 6px; color: var(--text-muted); font-size: 0.875rem; font-weight: 600; }
 
     input, select {
       width: 100%;
       padding: 10px 12px;
       border: 1px solid var(--border-color);
-      border-radius: 8px;
+      border-radius: 6px;
       font-size: 0.95rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      color: var(--text-main);
+      background-color: var(--input-bg);
       outline: none;
-      background-color: #fafafa;
     }
 
     input:focus, select:focus {
       border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-      background-color: #fff;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     }
 
     button {
       padding: 10px 16px;
       background-color: var(--primary-color);
-      color: white;
+      color: #ffffff;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       font-size: 0.9rem;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.2s, transform 0.1s;
+      transition: background-color 0.2s;
     }
 
     button:hover { background-color: var(--primary-hover); }
-    button:active { transform: scale(0.98); }
 
     .btn-secondary {
-      background-color: #f3f4f6;
+      background-color: #f1f5f9;
       color: var(--text-main);
       border: 1px solid var(--border-color);
     }
-    .btn-secondary:hover { background-color: #e5e7eb; }
+    .btn-secondary:hover { background-color: #e2e8f0; }
 
     .btn-danger { background-color: var(--danger-color); }
     .btn-danger:hover { background-color: var(--danger-hover); }
@@ -104,26 +103,26 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 16px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 12px;
       gap: 12px;
     }
 
-    #user-info { font-weight: 600; font-size: 0.95rem; word-break: break-all; }
+    #user-info { font-weight: 700; font-size: 0.95rem; color: var(--text-main); }
 
     /* タスク追加エリア */
     .add-task-box {
       display: flex;
       gap: 8px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
     .add-task-box input { flex: 1; }
 
     /* タブデザイン */
     .tabs {
       display: flex;
-      border-bottom: 2px solid var(--border-color);
+      border-bottom: 2px solid #e2e8f0;
       margin-bottom: 16px;
       gap: 4px;
     }
@@ -133,9 +132,9 @@
       background: none;
       border: none;
       color: var(--text-muted);
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
-      border-bottom: 2px solid transparent;
+      border-bottom: 3px solid transparent;
       border-radius: 0;
       margin-bottom: -2px;
     }
@@ -151,47 +150,49 @@
       margin-bottom: 16px;
       align-items: center;
       font-size: 0.875rem;
-      background: #f9fafb;
-      padding: 8px 12px;
-      border-radius: 8px;
+      background: #f1f5f9;
+      padding: 10px 12px;
+      border-radius: 6px;
+      color: var(--text-main);
+      font-weight: 600;
     }
     .filter-bar select { flex: 1; margin: 0; }
 
-    /* タスクリストアイテム */
+    /* タスクリスト */
     .task-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 12px;
       border: 1px solid var(--border-color);
-      border-radius: 8px;
+      border-radius: 6px;
       margin-bottom: 8px;
-      background: #fff;
-      transition: background-color 0.2s;
+      background: #ffffff;
+      color: var(--text-main);
       gap: 12px;
     }
-    .task-item:hover { background-color: #f9fafb; }
-    .task-item.completed span { text-decoration: line-through; color: var(--text-muted); }
-    .task-item span { flex: 1; word-break: break-word; }
+    .task-item.completed span { text-decoration: line-through; color: #94a3b8; }
+    .task-item span { flex: 1; word-break: break-word; font-weight: 500; }
 
     /* 各種セクション */
     .section-box {
       margin-top: 24px;
       padding-top: 16px;
-      border-top: 1px solid var(--border-color);
+      border-top: 2px solid #e2e8f0;
     }
 
     .log-item {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       padding: 8px 0;
-      border-bottom: 1px solid var(--border-color);
-      color: var(--text-muted);
+      border-bottom: 1px solid #e2e8f0;
+      color: var(--text-main);
       word-break: break-all;
     }
 
     #message {
       margin-top: 16px;
-      font-size: 0.875rem;
+      font-size: 0.9rem;
+      font-weight: 600;
       text-align: center;
       min-height: 1.25em;
     }
@@ -204,7 +205,6 @@
       .task-item { flex-direction: column; align-items: flex-start; }
       .task-item button { width: 100%; margin-top: 8px; }
     }
-  </style>
   </style>
 </head>
 <body>
