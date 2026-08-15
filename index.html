@@ -2,635 +2,110 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>タスク管理アプリ</title>
-  <!-- 現代的なフォント Inter & Noto Sans JP の読み込み -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-
+  <title>タスク管理</title>
   <style>
-:root {
-  --primary: #0f172a;          /* モダンなダークスレート */
-  --primary-hover: #1e293b;
-  --accent: #6366f1;           /* アクセント用インディゴ */
-  --bg-color: #fafafa;         /* ノイズのないクリーンな背景 */
-  --card-bg: #ffffff;
-  --text-main: #0f172a;
-  --text-muted: #64748b;
-  --border-color: #e2e8f0;
-  --border-hover: #cbd5e1;
-  --radius: 10px;
-  --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
-  --transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-main);
-  padding: 48px 16px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-}
-
-.container {
-  background: var(--card-bg);
-  padding: 36px;
-  border-radius: 16px;
-  box-shadow: var(--shadow-subtle);
-  border: 1px solid var(--border-color);
-  width: 100%;
-  max-width: 520px;
-}
-
-h2 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 28px;
-  letter-spacing: -0.02em;
-}
-
-h3 {
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  margin-bottom: 12px;
-}
-
-.form-group {
-  margin-bottom: 16px;
-}
-
-label {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-input, select {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  font-size: 0.9rem;
-  color: var(--text-main);
-  background: #ffffff;
-  outline: none;
-  transition: var(--transition);
-}
-
-input:focus, select:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
-}
-
-button {
-  padding: 10px 16px;
-  background-color: var(--primary);
-  color: #ffffff;
-  border: none;
-  border-radius: var(--radius);
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-button:hover {
-  background-color: var(--primary-hover);
-}
-
-.btn-secondary {
-  background-color: #ffffff;
-  color: var(--text-main);
-  border: 1px solid var(--border-color);
-}
-.btn-secondary:hover {
-  background-color: #f8fafc;
-  border-color: var(--border-hover);
-}
-
-.btn-danger {
-  background-color: transparent;
-  color: #ef4444;
-  border: 1px solid #fee2e2;
-}
-.btn-danger:hover {
-  background-color: #fef2f2;
-}
-
-.hidden { display: none !important; }
-
-/* ヘッダー */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 28px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-#user-info {
-  font-weight: 500;
-  font-size: 0.875rem;
-  color: var(--text-muted);
-}
-
-/* タスク追加 */
-.add-task-box {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 28px;
-}
-.add-task-box input {
-  flex: 1;
-}
-
-/* タブデザイン */
-.tabs {
-  display: flex;
-  background: #f1f5f9;
-  padding: 3px;
-  border-radius: calc(var(--radius) - 2px);
-  margin-bottom: 16px;
-  gap: 2px;
-}
-.tab-btn {
-  flex: 1;
-  padding: 6px 0;
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  font-weight: 500;
-  font-size: 0.8rem;
-  cursor: pointer;
-  border-radius: 6px;
-}
-.tab-btn.active {
-  color: var(--text-main);
-  background: #ffffff;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
-}
-
-/* タスクアイテム */
-#task-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.task-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 14px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  background: #ffffff;
-  transition: var(--transition);
-}
-.task-item:hover {
-  border-color: var(--border-hover);
-}
-.task-item.completed span {
-  text-decoration: line-through;
-  color: #94a3b8;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 40px 16px;
-  color: var(--text-muted);
-  font-size: 0.875rem;
-}
-
-/* セクション */
-.section-box {
-  margin-top: 28px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-color);
-}
-
-.accordion-toggle {
-  width: 100%;
-  text-align: left;
-  justify-content: space-between;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
+    body { font-family: sans-serif; margin: 20px; }
+    .task-card { border: 1px solid #ccc; padding: 12px; margin-bottom: 8px; border-radius: 6px; }
+    .completed { background-color: #f0f0f0; opacity: 0.8; }
+    .btn { padding: 6px 12px; cursor: pointer; border-radius: 4px; border: 1px solid #ccc; }
+    .btn-complete { background-color: #4caf50; color: white; border: none; }
+    .btn-undo { background-color: #e0e0e0; color: #333; }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <!-- ログイン画面 -->
-    <div id="login-section">
-      <h2>ログイン</h2>
-      <div class="form-group">
-        <label>ユーザー名</label>
-        <input type="text" id="username" value="admin">
-      </div>
-      <div class="form-group">
-        <label>パスワード</label>
-        <input type="password" id="password" value="admin123">
-      </div>
-      <button onclick="login()" style="width: 100%; margin-top: 8px;">ログイン</button>
-    </div>
+  <h2>タスク一覧</h2>
 
-    <!-- アプリメイン画面 -->
-    <div id="app-section" class="hidden">
-      <div class="header">
-        <span id="user-info">ようこそ！</span>
-        <button onclick="logout()" class="btn-danger">ログアウト</button>
-      </div>
+  <!-- 担当者絞り込み -->
+  <label for="userFilter">担当者: </label>
+  <select id="userFilter" onchange="renderTasks()">
+    <option value="all">全員を表示</option>
+    <!-- JSでユーザーの選択肢を動的に追加します -->
+  </select>
 
-      <h3>タスク追加</h3>
-      <div class="add-task-box">
-        <input type="text" id="new-task-title" placeholder="新しいタスクを入力...">
-        <button onclick="createTask()">追加</button>
-      </div>
+  <hr>
 
-      <h3>タスク一覧</h3>
-
-      <!-- 状態切り替えタブ -->
-      <div class="tabs">
-        <button id="tab-uncompleted" class="tab-btn active" onclick="switchStatusTab('未完了')">未完了</button>
-        <button id="tab-completed" class="tab-btn" onclick="switchStatusTab('完了')">完了</button>
-        <button id="tab-all" class="tab-btn" onclick="switchStatusTab('すべて')">すべて</button>
-      </div>
-
-      <!-- マスタユーザー専用：ユーザー絞り込みドロップダウン -->
-      <div id="user-filter-box" class="filter-bar hidden">
-        <label for="user-select" style="margin: 0; white-space: nowrap;">表示ユーザー:</label>
-        <select id="user-select" onchange="renderTasks()">
-          <option value="ALL">すべてのユーザー</option>
-        </select>
-      </div>
-
-      <div id="task-list">読み込み中...</div>
-
-      <!-- ユーザー設定変更エリア（折りたたみ式） -->
-      <div class="section-box">
-        <button onclick="toggleAccordion('profile-setting-box')" class="btn-secondary accordion-toggle">
-          <span>⚙️ アカウント設定の変更</span>
-          <span style="font-size: 0.75rem;">▽</span>
-        </button>
-        <div id="profile-setting-box" class="hidden" style="margin-top: 16px; padding: 16px; background: #f8fafc; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-          <div class="form-group">
-            <label>新しいユーザー名</label>
-            <input type="text" id="edit-username">
-          </div>
-          <div class="form-group">
-            <label>新しいパスワード</label>
-            <input type="password" id="edit-password" placeholder="新しいパスワードを入力">
-          </div>
-          <button onclick="updateProfile()" class="btn-secondary" style="width: 100%;">設定を保存する</button>
-        </div>
-      </div>
-
-      <!-- マスタユーザー専用エリア -->
-      <div id="admin-section" class="section-box admin-box hidden">
-        <h3>【マスタ機能】全体操作履歴</h3>
-        <button onclick="loadLogs()" class="btn-secondary" style="margin-bottom: 12px; width: 100%;">履歴ログを更新</button>
-        <div id="log-list">ボタンを押すと履歴を取得します</div>
-      </div>
-    </div>
-
-    <div id="message"></div>
-  </div>
+  <!-- タスクリスト表示エリア -->
+  <div id="taskList"></div>
 
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwrujO1lvSsyCSYRpcbLxoLHhkziiVouQo4LQvK23QejUfYGCLEUuJNfxUJurGSTQuy/exec";
-    let currentUser = null;
-    let allTasksCache = [];
-    let currentStatusTab = "未完了";
+    // サンプルデータ（GAS等から取得するデータのイメージです）
+    // userId だけでなく userName を持たせる構造に変更しています
+    let tasks = [
+      { id: 1, title: "提案書の作成", userName: "山田 太郎", completed: false },
+      { id: 2, title: "経費精算の申請", userName: "佐藤 花子", completed: true },
+      { id: 3, title: "会議資料の印刷", userName: "山田 太郎", completed: false }
+    ];
 
-    window.onload = () => {
-      const savedUser = sessionStorage.getItem("user");
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        showApp();
-      }
-    };
+    // 担当者フィルターの選択肢を動的に生成する関数
+    function initUserFilter() {
+      const filterSelect = document.getElementById('userFilter');
+      // 重複のないユーザー名一覧を取得
+      const userNames = [...new Set(tasks.map(task => task.userName))];
 
-    async function login() {
-      const usernameInput = document.getElementById("username").value;
-      const passwordInput = document.getElementById("password").value;
-      showMessage("通信中...", "#475569");
-
-      try {
-        const res = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "login", username: usernameInput, password: passwordInput })
-        });
-        const data = await res.json();
-
-        if (data.status === "success") {
-          currentUser = data.user;
-          sessionStorage.setItem("user", JSON.stringify(data.user));
-          sessionStorage.setItem("token", data.token);
-          showMessage("", "");
-          showApp();
-        } else {
-          showMessage(data.message, "#e11d48");
-        }
-      } catch (err) {
-        showMessage("エラーが発生しました: " + err.message, "#e11d48");
-      }
-    }
-
-    function logout() {
-      sessionStorage.clear();
-      currentUser = null;
-      document.getElementById("app-section").classList.add("hidden");
-      document.getElementById("admin-section").classList.add("hidden");
-      document.getElementById("user-filter-box").classList.add("hidden");
-      document.getElementById("login-section").classList.remove("hidden");
-      showMessage("ログアウトしました", "#059669");
-    }
-
-    function showApp() {
-      document.getElementById("login-section").classList.add("hidden");
-      document.getElementById("app-section").classList.remove("hidden");
-      document.getElementById("user-info").innerText = `${currentUser.username} 様 (${currentUser.role})`;
-      document.getElementById("edit-username").value = currentUser.username;
-      
-      const adminSection = document.getElementById("admin-section");
-      const userFilterBox = document.getElementById("user-filter-box");
-
-      if (currentUser.role === "admin") {
-        adminSection.classList.remove("hidden");
-        userFilterBox.classList.remove("hidden");
-        loadLogs();
-      } else {
-        adminSection.classList.add("hidden");
-        userFilterBox.classList.add("hidden");
-      }
-
-      loadTasks();
-    }
-
-    async function loadTasks() {
-      const taskListDiv = document.getElementById("task-list");
-      taskListDiv.innerHTML = '<div class="empty-state">読み込み中...</div>';
-
-      try {
-        const res = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "getTasks", userId: currentUser.id, role: currentUser.role })
-        });
-        const data = await res.json();
-
-        if (data.status === "success") {
-          allTasksCache = data.tasks;
-          
-          if (currentUser.role === "admin") {
-            setupUserFilterOptions();
-          } else {
-            document.getElementById("user-select").innerHTML = '<option value="ALL">すべてのユーザー</option>';
-          }
-
-          renderTasks();
-        }
-      } catch (err) {
-        taskListDiv.innerHTML = '<div class="empty-state" style="color: #e11d48;">タスクの取得に失敗しました</div>';
-      }
-    }
-
-    function setupUserFilterOptions() {
-      const select = document.getElementById("user-select");
-      const currentSelected = select.value || "ALL";
-      select.innerHTML = '<option value="ALL">すべてのユーザー</option>';
-
-      const userIds = [...new Set(allTasksCache.map(t => t.userId))];
-      userIds.forEach(uid => {
-        const opt = document.createElement("option");
-        opt.value = uid;
-        opt.innerText = `ユーザーID: ${uid}`;
-        select.appendChild(opt);
+      userNames.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        filterSelect.appendChild(option);
       });
-
-      select.value = currentSelected;
     }
 
-    function switchStatusTab(status) {
-      currentStatusTab = status;
-      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-      if (status === '未完了') document.getElementById("tab-uncompleted").classList.add("active");
-      if (status === '完了') document.getElementById("tab-completed").classList.add("active");
-      if (status === 'すべて') document.getElementById("tab-all").classList.add("active");
-      renderTasks();
-    }
-
+    // タスク一覧を描画する関数
     function renderTasks() {
-      const taskListDiv = document.getElementById("task-list");
-      
-      let filtered = allTasksCache;
+      const taskList = document.getElementById('taskList');
+      const selectedUser = document.getElementById('userFilter').value;
+      taskList.innerHTML = '';
 
-      if (currentStatusTab !== "すべて") {
-        filtered = filtered.filter(t => t.status === currentStatusTab);
-      }
+      // 選択された担当者でフィルタリング
+      const filteredTasks = tasks.filter(task => {
+        return selectedUser === 'all' || task.userName === selectedUser;
+      });
 
-      if (currentUser.role === "admin") {
-        const selectedUser = document.getElementById("user-select").value;
-        if (selectedUser !== "ALL") {
-          filtered = filtered.filter(t => t.userId === selectedUser);
-        }
-      }
+      filteredTasks.forEach(task => {
+        const card = document.createElement('div');
+        card.className = `task-card ${task.completed ? 'completed' : ''}`;
 
-      if (filtered.length === 0) {
-        taskListDiv.innerHTML = '<div class="empty-state">該当するタスクはありません</div>';
-        return;
-      }
+        // ボタンの文言とスタイルを状態によって切り替え
+        const buttonText = task.completed ? '未完了に戻す' : '✓ 完了';
+        const buttonClass = task.completed ? 'btn-undo' : 'btn-complete';
 
-      taskListDiv.innerHTML = "";
-      filtered.forEach(task => {
-        const item = document.createElement("div");
-        item.className = `task-item ${task.status === '完了' ? 'completed' : ''}`;
-        
-        const ownerText = currentUser.role === "admin" ? `<small style="color:var(--text-muted);">[${task.userId}]</small> ` : "";
-        const isCompleted = task.status === '完了';
-        
-        item.innerHTML = `
-          <span>${ownerText}${escapeHtml(task.title)}</span>
-          <button class="${isCompleted ? 'btn-secondary' : ''}" onclick="toggleTaskStatus('${task.id}', '${task.status}')">
-            ${isCompleted ? '元に戻す' : '✓ 完了'}
-          </button>
+        card.innerHTML = `
+          <div>
+            <strong>${escapeHtml(task.title)}</strong>
+            <span style="color: #666; font-size: 0.9em; margin-left: 8px;">
+              (担当: ${escapeHtml(task.userName)})
+            </span>
+          </div>
+          <div style="margin-top: 8px;">
+            <button class="btn ${buttonClass}" onclick="toggleTask(${task.id})">
+              ${buttonText}
+            </button>
+          </div>
         `;
-        taskListDiv.appendChild(item);
+        taskList.appendChild(card);
       });
     }
 
-    async function createTask() {
-      const input = document.getElementById("new-task-title");
-      const title = input.value.trim();
-      if (!title) return;
-
-      showMessage("タスクを追加中...", "#475569");
-      try {
-        const res = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "createTask", userId: currentUser.id, title: title })
-        });
-        const data = await res.json();
-        if (data.status === "success") {
-          input.value = "";
-          showMessage("タスクを追加しました！", "#059669");
-          loadTasks();
-          if (currentUser.role === "admin") loadLogs();
-        }
-      } catch (err) {
-        showMessage("追加に失敗しました", "#e11d48");
+    // 完了/未完了のトグル処理
+    function toggleTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (task) {
+        task.completed = !task.completed;
+        renderTasks(); // 状態更新後に再描画
       }
     }
 
-    async function toggleTaskStatus(taskId, currentStatus) {
-      const newStatus = currentStatus === "完了" ? "未完了" : "完了";
-      showMessage("更新中...", "#475569");
-      try {
-        const res = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "updateTaskStatus", userId: currentUser.id, taskId: taskId, status: newStatus })
-        });
-        const data = await res.json();
-        if (data.status === "success") {
-          showMessage("更新しました！", "#059669");
-          loadTasks();
-          if (currentUser.role === "admin") loadLogs();
-        }
-      } catch (err) {
-        showMessage("更新に失敗しました", "#e11d48");
-      }
-    }
-
-    async function updateProfile() {
-      const newUsername = document.getElementById("edit-username").value.trim();
-      const newPassword = document.getElementById("edit-password").value.trim();
-
-      if (!newUsername || !newPassword) {
-        showMessage("ユーザー名とパスワードの両方を入力してください", "#e11d48");
-        return;
-      }
-
-      showMessage("更新中...", "#475569");
-      try {
-        const res = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            action: "updateUserProfile",
-            userId: currentUser.id,
-            newUsername: newUsername,
-            newPassword: newPassword
-          })
-        });
-        const data = await res.json();
-
-        if (data.status === "success") {
-          currentUser.username = data.updatedUsername;
-          sessionStorage.setItem("user", JSON.stringify(currentUser));
-          document.getElementById("user-info").innerText = `${currentUser.username} 様 (${currentUser.role})`;
-          document.getElementById("edit-password").value = "";
-          showMessage("アカウント情報を更新しました！次回から新しい情報でログインしてください", "#059669");
-          if (currentUser.role === "admin") loadLogs();
-        } else {
-          showMessage(data.message, "#e11d48");
-        }
-      } catch (err) {
-        showMessage("更新に失敗しました", "#e11d48");
-      }
-    }
-
-    async function loadLogs() {
-      const logListDiv = document.getElementById("log-list");
-      logListDiv.innerHTML = '<div class="empty-state">履歴を取得中...</div>';
-
-      try {
-        const res = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "getLogs", role: currentUser.role })
-        });
-        const data = await res.json();
-
-        if (data.status === "success") {
-          if (data.logs.length === 0) {
-            logListDiv.innerHTML = '<div class="empty-state">履歴はありません</div>';
-            return;
-          }
-          logListDiv.innerHTML = "";
-          data.logs.forEach(log => {
-            const item = document.createElement("div");
-            item.className = "log-item";
-            
-            const formattedTime = formatTimestamp(log.timestamp);
-            
-            item.innerHTML = `<strong>[${formattedTime}]</strong> <span style="color: var(--text-muted);">(ユーザー: ${log.userId})</span> ${escapeHtml(log.action)}`;
-            logListDiv.appendChild(item);
-          });
-        } else {
-          logListDiv.innerHTML = `<div class="empty-state" style="color: #e11d48;">${data.message}</div>`;
-        }
-      } catch (err) {
-        logListDiv.innerHTML = '<div class="empty-state" style="color: #e11d48;">履歴の取得に失敗しました</div>';
-      }
-    }
-
-    function formatTimestamp(ts) {
-      if (!ts) return "";
-      const d = new Date(ts);
-      if (isNaN(d.getTime())) return ts;
-
-      const pad = n => String(n).padStart(2, '0');
-      const YYYY = d.getFullYear();
-      const MM = pad(d.getMonth() + 1);
-      const DD = pad(d.getDate());
-      const hh = pad(d.getHours());
-      const mm = pad(d.getMinutes());
-      const ss = pad(d.getSeconds());
-
-      return `${YYYY}-${MM}-${DD} ${hh}:${mm}:${ss}`;
-    }
-
-    function showMessage(msg, color) {
-      const messageDiv = document.getElementById("message");
-      messageDiv.style.color = color;
-      messageDiv.innerText = msg;
-    }
-
+    // XSS対策用のエスケープ関数
     function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      return str.replace(/[&<>"']/g, match => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[match]);
     }
 
-    function toggleAccordion(elementId) {
-      const target = document.getElementById(elementId);
-      target.classList.toggle("hidden");
-    }
+    // 初期化実行
+    initUserFilter();
+    renderTasks();
   </script>
 </body>
 </html>
