@@ -4,97 +4,179 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>タスク管理アプリ</title>
-<style>
+  <!-- 現代的なフォント Inter & Noto Sans JP の読み込み -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
     :root {
-      --primary-color: #3b82f6;
-      --primary-hover: #2563eb;
+      /* メインカラー：洗練されたインディゴ/ブルー */
+      --primary-color: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      
+      /* 背景・カードカラー */
       --bg-color: #f8fafc;
       --card-bg: #ffffff;
-      --text-main: #111827;      /* くっきり見える濃い文字色 */
-      --text-muted: #4b5563;     /* 補足用テキスト */
-      --border-color: #cbd5e1;   /* 視認性の高い枠線 */
-      --input-bg: #ffffff;
-      --danger-color: #ef4444;
-      --danger-hover: #dc2626;
-      --radius: 10px;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+      
+      /* テキストカラー */
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      
+      /* 境界線・入力フィールド */
+      --border-color: #e2e8f0;
+      --input-bg: #f8fafc;
+      --input-focus-bg: #ffffff;
+      
+      /* デンジャーカラー：柔らかなローズ */
+      --danger-color: #f43f5e;
+      --danger-hover: #e11d48;
+      --danger-light: #fff1f2;
+      
+      /* UIパーツ調整 */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+      --shadow-lg: 0 10px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.01);
+      
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: var(--bg-color);
+      background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+      background-size: 24px 24px;
       color: var(--text-main);
-      margin: 0;
-      padding: 16px;
+      padding: 40px 16px;
       display: flex;
       justify-content: center;
+      align-items: flex-start;
       min-height: 100vh;
+      line-height: 1.5;
     }
 
     .container {
       background: var(--card-bg);
-      padding: 24px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border-color);
+      padding: 32px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(226, 232, 240, 0.8);
       width: 100%;
-      max-width: 600px;
-      height: fit-content;
+      max-width: 560px;
+      backdrop-filter: blur(8px);
     }
 
-    h2, h3 {
-      margin-top: 0;
-      color: var(--text-main);
+    h2 {
+      font-size: 1.5rem;
       font-weight: 700;
+      text-align: center;
+      margin-bottom: 24px;
+      letter-spacing: -0.025em;
+      color: var(--text-main);
     }
 
-    h2 { font-size: 1.4rem; text-align: center; margin-bottom: 20px; }
-    h3 { font-size: 1.05rem; margin-bottom: 12px; }
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-    .form-group { margin-bottom: 16px; }
-    label { display: block; margin-bottom: 6px; color: var(--text-muted); font-size: 0.875rem; font-weight: 600; }
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+      font-size: 0.825rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
 
     input, select {
       width: 100%;
-      padding: 10px 12px;
+      padding: 10px 14px;
       border: 1px solid var(--border-color);
-      border-radius: 6px;
-      font-size: 0.95rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.925rem;
       color: var(--text-main);
       background-color: var(--input-bg);
       outline: none;
+      transition: var(--transition);
+      font-family: inherit;
     }
 
     input:focus, select:focus {
+      background-color: var(--input-focus-bg);
       border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     }
 
     button {
-      padding: 10px 16px;
+      padding: 10px 18px;
       background-color: var(--primary-color);
       color: #ffffff;
       border: none;
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: inherit;
+      box-shadow: var(--shadow-sm);
     }
 
-    button:hover { background-color: var(--primary-hover); }
+    button:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
 
     .btn-secondary {
-      background-color: #f1f5f9;
+      background-color: #ffffff;
       color: var(--text-main);
       border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
     }
-    .btn-secondary:hover { background-color: #e2e8f0; }
+    .btn-secondary:hover {
+      background-color: #f8fafc;
+      border-color: #cbd5e1;
+    }
 
-    .btn-danger { background-color: var(--danger-color); }
-    .btn-danger:hover { background-color: var(--danger-hover); }
+    .btn-danger {
+      background-color: var(--danger-light);
+      color: var(--danger-color);
+      border: 1px solid rgba(244, 63, 94, 0.2);
+      box-shadow: none;
+    }
+    .btn-danger:hover {
+      background-color: var(--danger-color);
+      color: #ffffff;
+    }
 
     .hidden { display: none !important; }
 
@@ -103,107 +185,184 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #e2e8f0;
-      padding-bottom: 12px;
-      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
     }
 
-    #user-info { font-weight: 700; font-size: 0.95rem; color: var(--text-main); }
+    #user-info {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      background: var(--primary-light);
+      color: var(--primary-color);
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
 
     /* タスク追加エリア */
     .add-task-box {
       display: flex;
       gap: 8px;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
-    .add-task-box input { flex: 1; }
+    .add-task-box input {
+      flex: 1;
+    }
 
-    /* タブデザイン */
+    /* タブデザイン（セグメントコントロール風） */
     .tabs {
       display: flex;
-      border-bottom: 2px solid #e2e8f0;
-      margin-bottom: 16px;
-      gap: 4px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 20px;
+      gap: 2px;
     }
     .tab-btn {
       flex: 1;
-      padding: 10px 0;
-      background: none;
+      padding: 8px 0;
+      background: transparent;
       border: none;
       color: var(--text-muted);
-      font-weight: 700;
+      font-weight: 600;
+      font-size: 0.85rem;
       cursor: pointer;
-      border-bottom: 3px solid transparent;
-      border-radius: 0;
-      margin-bottom: -2px;
+      border-radius: 6px;
+      box-shadow: none;
+      transition: var(--transition);
+    }
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.5);
+      transform: none;
     }
     .tab-btn.active {
-      color: var(--primary-color);
-      border-bottom-color: var(--primary-color);
+      color: var(--text-main);
+      background: #ffffff;
+      box-shadow: var(--shadow-sm);
     }
 
     /* 絞り込みバー */
     .filter-bar {
       display: flex;
-      gap: 8px;
+      gap: 12px;
       margin-bottom: 16px;
       align-items: center;
-      font-size: 0.875rem;
-      background: #f1f5f9;
-      padding: 10px 12px;
-      border-radius: 6px;
-      color: var(--text-main);
-      font-weight: 600;
+      font-size: 0.85rem;
+      background: #f8fafc;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
     }
-    .filter-bar select { flex: 1; margin: 0; }
+    .filter-bar select {
+      flex: 1;
+      margin: 0;
+      padding: 6px 10px;
+      background: #ffffff;
+    }
 
     /* タスクリスト */
+    #task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 60px;
+    }
+
     .task-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px;
+      padding: 12px 16px;
       border: 1px solid var(--border-color);
-      border-radius: 6px;
-      margin-bottom: 8px;
+      border-radius: var(--radius-sm);
       background: #ffffff;
-      color: var(--text-main);
+      transition: var(--transition);
       gap: 12px;
     }
-    .task-item.completed span { text-decoration: line-through; color: #94a3b8; }
-    .task-item span { flex: 1; word-break: break-word; font-weight: 500; }
+    .task-item:hover {
+      border-color: #cbd5e1;
+      box-shadow: var(--shadow-sm);
+    }
+    .task-item.completed {
+      background: #f8fafc;
+      border-color: #f1f5f9;
+    }
+    .task-item.completed span {
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+    .task-item span {
+      flex: 1;
+      word-break: break-word;
+      font-weight: 500;
+      font-size: 0.925rem;
+    }
+
+    .task-item button {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+
+    /* 空状態テキスト */
+    .empty-state {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
 
     /* 各種セクション */
     .section-box {
-      margin-top: 24px;
-      padding-top: 16px;
-      border-top: 2px solid #e2e8f0;
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .accordion-toggle {
+      width: 100%;
+      text-align: left;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #f8fafc;
+      border-color: var(--border-color);
+      color: var(--text-main);
+      font-size: 0.875rem;
+    }
+    .accordion-toggle:hover {
+      background: #f1f5f9;
     }
 
     .log-item {
-      font-size: 0.85rem;
-      padding: 8px 0;
-      border-bottom: 1px solid #e2e8f0;
+      font-size: 0.825rem;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
       color: var(--text-main);
       word-break: break-all;
+      background: #f8fafc;
+      border-radius: 6px;
+      margin-bottom: 6px;
     }
 
     #message {
-      margin-top: 16px;
-      font-size: 0.9rem;
+      margin-top: 20px;
+      font-size: 0.875rem;
       font-weight: 600;
       text-align: center;
       min-height: 1.25em;
+      padding: 8px;
+      border-radius: var(--radius-sm);
     }
 
     /* モバイル対応調整 */
     @media (max-width: 480px) {
-      body { padding: 8px; }
-      .container { padding: 16px; }
+      body { padding: 12px 8px; }
+      .container { padding: 20px 16px; }
       .add-task-box { flex-direction: column; }
       .task-item { flex-direction: column; align-items: flex-start; }
-      .task-item button { width: 100%; margin-top: 8px; }
+      .task-item button { width: 100%; margin-top: 4px; }
     }
   </style>
 </head>
@@ -221,7 +380,7 @@
         <label>パスワード</label>
         <input type="password" id="password" value="admin123">
       </div>
-      <button onclick="login()" style="width: 100%;">ログイン</button>
+      <button onclick="login()" style="width: 100%; margin-top: 8px;">ログイン</button>
     </div>
 
     <!-- アプリメイン画面 -->
@@ -248,7 +407,7 @@
 
       <!-- マスタユーザー専用：ユーザー絞り込みドロップダウン -->
       <div id="user-filter-box" class="filter-bar hidden">
-        <label for="user-select">表示ユーザー:</label>
+        <label for="user-select" style="margin: 0; white-space: nowrap;">表示ユーザー:</label>
         <select id="user-select" onchange="renderTasks()">
           <option value="ALL">すべてのユーザー</option>
         </select>
@@ -256,12 +415,13 @@
 
       <div id="task-list">読み込み中...</div>
 
-<!-- ユーザー設定変更エリア（折りたたみ式） -->
+      <!-- ユーザー設定変更エリア（折りたたみ式） -->
       <div class="section-box">
-        <button onclick="toggleAccordion('profile-setting-box')" class="btn-secondary" style="width: 100%; text-align: left;">
-          ⚙️ アカウント設定の変更 ▽
+        <button onclick="toggleAccordion('profile-setting-box')" class="btn-secondary accordion-toggle">
+          <span>⚙️ アカウント設定の変更</span>
+          <span style="font-size: 0.75rem;">▽</span>
         </button>
-        <div id="profile-setting-box" class="hidden" style="margin-top: 15px;">
+        <div id="profile-setting-box" class="hidden" style="margin-top: 16px; padding: 16px; background: #f8fafc; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
           <div class="form-group">
             <label>新しいユーザー名</label>
             <input type="text" id="edit-username">
@@ -270,15 +430,15 @@
             <label>新しいパスワード</label>
             <input type="password" id="edit-password" placeholder="新しいパスワードを入力">
           </div>
-          <button onclick="updateProfile()" class="btn-secondary">設定を保存する</button>
+          <button onclick="updateProfile()" class="btn-secondary" style="width: 100%;">設定を保存する</button>
         </div>
       </div>
 
       <!-- マスタユーザー専用エリア -->
       <div id="admin-section" class="section-box admin-box hidden">
         <h3>【マスタ機能】全体操作履歴</h3>
-        <button onclick="loadLogs()" class="btn-secondary">履歴ログを更新</button>
-        <div id="log-list" style="margin-top: 15px;">ボタンを押すと履歴を取得します</div>
+        <button onclick="loadLogs()" class="btn-secondary" style="margin-bottom: 12px; width: 100%;">履歴ログを更新</button>
+        <div id="log-list">ボタンを押すと履歴を取得します</div>
       </div>
     </div>
 
@@ -302,7 +462,7 @@
     async function login() {
       const usernameInput = document.getElementById("username").value;
       const passwordInput = document.getElementById("password").value;
-      showMessage("通信中...", "#333");
+      showMessage("通信中...", "#475569");
 
       try {
         const res = await fetch(GAS_URL, {
@@ -319,10 +479,10 @@
           showMessage("", "");
           showApp();
         } else {
-          showMessage(data.message, "red");
+          showMessage(data.message, "#e11d48");
         }
       } catch (err) {
-        showMessage("エラーが発生しました: " + err.message, "red");
+        showMessage("エラーが発生しました: " + err.message, "#e11d48");
       }
     }
 
@@ -333,7 +493,7 @@
       document.getElementById("admin-section").classList.add("hidden");
       document.getElementById("user-filter-box").classList.add("hidden");
       document.getElementById("login-section").classList.remove("hidden");
-      showMessage("ログアウトしました", "green");
+      showMessage("ログアウトしました", "#059669");
     }
 
     function showApp() {
@@ -359,7 +519,7 @@
 
     async function loadTasks() {
       const taskListDiv = document.getElementById("task-list");
-      taskListDiv.innerHTML = "読み込み中...";
+      taskListDiv.innerHTML = '<div class="empty-state">読み込み中...</div>';
 
       try {
         const res = await fetch(GAS_URL, {
@@ -381,7 +541,7 @@
           renderTasks();
         }
       } catch (err) {
-        taskListDiv.innerHTML = "タスクの取得に失敗しました";
+        taskListDiv.innerHTML = '<div class="empty-state" style="color: #e11d48;">タスクの取得に失敗しました</div>';
       }
     }
 
@@ -427,7 +587,7 @@
       }
 
       if (filtered.length === 0) {
-        taskListDiv.innerHTML = "<p>該当するタスクはありません</p>";
+        taskListDiv.innerHTML = '<div class="empty-state">該当するタスクはありません</div>';
         return;
       }
 
@@ -436,12 +596,13 @@
         const item = document.createElement("div");
         item.className = `task-item ${task.status === '完了' ? 'completed' : ''}`;
         
-        const ownerText = currentUser.role === "admin" ? `<small>[${task.userId}]</small> ` : "";
+        const ownerText = currentUser.role === "admin" ? `<small style="color:var(--text-muted);">[${task.userId}]</small> ` : "";
+        const isCompleted = task.status === '完了';
         
         item.innerHTML = `
-          <span>${ownerText}${escapeHtml(task.title)} <small>(${task.status})</small></span>
-          <button onclick="toggleTaskStatus('${task.id}', '${task.status}')">
-            ${task.status === '完了' ? '未完了に戻す' : '完了にする'}
+          <span>${ownerText}${escapeHtml(task.title)}</span>
+          <button class="${isCompleted ? 'btn-secondary' : ''}" onclick="toggleTaskStatus('${task.id}', '${task.status}')">
+            ${isCompleted ? '未完了に戻す' : '完了にする'}
           </button>
         `;
         taskListDiv.appendChild(item);
@@ -453,7 +614,7 @@
       const title = input.value.trim();
       if (!title) return;
 
-      showMessage("タスクを追加中...", "#333");
+      showMessage("タスクを追加中...", "#475569");
       try {
         const res = await fetch(GAS_URL, {
           method: "POST",
@@ -463,18 +624,18 @@
         const data = await res.json();
         if (data.status === "success") {
           input.value = "";
-          showMessage("タスクを追加しました！", "green");
+          showMessage("タスクを追加しました！", "#059669");
           loadTasks();
           if (currentUser.role === "admin") loadLogs();
         }
       } catch (err) {
-        showMessage("追加に失敗しました", "red");
+        showMessage("追加に失敗しました", "#e11d48");
       }
     }
 
     async function toggleTaskStatus(taskId, currentStatus) {
       const newStatus = currentStatus === "完了" ? "未完了" : "完了";
-      showMessage("更新中...", "#333");
+      showMessage("更新中...", "#475569");
       try {
         const res = await fetch(GAS_URL, {
           method: "POST",
@@ -483,26 +644,25 @@
         });
         const data = await res.json();
         if (data.status === "success") {
-          showMessage("更新しました！", "green");
+          showMessage("更新しました！", "#059669");
           loadTasks();
           if (currentUser.role === "admin") loadLogs();
         }
       } catch (err) {
-        showMessage("更新に失敗しました", "red");
+        showMessage("更新に失敗しました", "#e11d48");
       }
     }
 
-    // ユーザー情報変更処理
     async function updateProfile() {
       const newUsername = document.getElementById("edit-username").value.trim();
       const newPassword = document.getElementById("edit-password").value.trim();
 
       if (!newUsername || !newPassword) {
-        showMessage("ユーザー名とパスワードの両方を入力してください", "red");
+        showMessage("ユーザー名とパスワードの両方を入力してください", "#e11d48");
         return;
       }
 
-      showMessage("更新中...", "#333");
+      showMessage("更新中...", "#475569");
       try {
         const res = await fetch(GAS_URL, {
           method: "POST",
@@ -521,19 +681,19 @@
           sessionStorage.setItem("user", JSON.stringify(currentUser));
           document.getElementById("user-info").innerText = `${currentUser.username} 様 (${currentUser.role})`;
           document.getElementById("edit-password").value = "";
-          showMessage("アカウント情報を更新しました！次回から新しい情報でログインしてください", "green");
+          showMessage("アカウント情報を更新しました！次回から新しい情報でログインしてください", "#059669");
           if (currentUser.role === "admin") loadLogs();
         } else {
-          showMessage(data.message, "red");
+          showMessage(data.message, "#e11d48");
         }
       } catch (err) {
-        showMessage("更新に失敗しました", "red");
+        showMessage("更新に失敗しました", "#e11d48");
       }
     }
 
-async function loadLogs() {
+    async function loadLogs() {
       const logListDiv = document.getElementById("log-list");
-      logListDiv.innerHTML = "履歴を取得中...";
+      logListDiv.innerHTML = '<div class="empty-state">履歴を取得中...</div>';
 
       try {
         const res = await fetch(GAS_URL, {
@@ -545,7 +705,7 @@ async function loadLogs() {
 
         if (data.status === "success") {
           if (data.logs.length === 0) {
-            logListDiv.innerHTML = "履歴はありません";
+            logListDiv.innerHTML = '<div class="empty-state">履歴はありません</div>';
             return;
           }
           logListDiv.innerHTML = "";
@@ -553,25 +713,23 @@ async function loadLogs() {
             const item = document.createElement("div");
             item.className = "log-item";
             
-            // ISO文字列等の日時を yyyy-mm-dd hh:mm:ss 形式へ変換
             const formattedTime = formatTimestamp(log.timestamp);
             
-            item.innerHTML = `<strong>[${formattedTime}]</strong> (ユーザー: ${log.userId}) ${escapeHtml(log.action)}`;
+            item.innerHTML = `<strong>[${formattedTime}]</strong> <span style="color: var(--text-muted);">(ユーザー: ${log.userId})</span> ${escapeHtml(log.action)}`;
             logListDiv.appendChild(item);
           });
         } else {
-          logListDiv.innerHTML = data.message;
+          logListDiv.innerHTML = `<div class="empty-state" style="color: #e11d48;">${data.message}</div>`;
         }
       } catch (err) {
-        logListDiv.innerHTML = "履歴の取得に失敗しました";
+        logListDiv.innerHTML = '<div class="empty-state" style="color: #e11d48;">履歴の取得に失敗しました</div>';
       }
     }
 
-    // 日時整形用関数
     function formatTimestamp(ts) {
       if (!ts) return "";
       const d = new Date(ts);
-      if (isNaN(d.getTime())) return ts; // 変換できない場合はそのまま表示
+      if (isNaN(d.getTime())) return ts;
 
       const pad = n => String(n).padStart(2, '0');
       const YYYY = d.getFullYear();
@@ -583,6 +741,7 @@ async function loadLogs() {
 
       return `${YYYY}-${MM}-${DD} ${hh}:${mm}:${ss}`;
     }
+
     function showMessage(msg, color) {
       const messageDiv = document.getElementById("message");
       messageDiv.style.color = color;
@@ -592,7 +751,7 @@ async function loadLogs() {
     function escapeHtml(str) {
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
-    // 折りたたみの開閉処理
+
     function toggleAccordion(elementId) {
       const target = document.getElementById(elementId);
       target.classList.toggle("hidden");
