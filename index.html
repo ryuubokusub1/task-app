@@ -401,6 +401,11 @@
     function escapeHtml(str) {
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
+    // 折りたたみの開閉処理
+    function toggleAccordion(elementId) {
+      const target = document.getElementById(elementId);
+      target.classList.toggle("hidden");
+    }
   </script>
 </body>
 </html>
