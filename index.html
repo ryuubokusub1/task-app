@@ -374,7 +374,7 @@ button:hover {
     function showApp() {
       document.getElementById("login-section").classList.add("hidden");
       document.getElementById("app-section").classList.remove("hidden");
-      document.getElementById("user-info").innerText = `${currentUser.username} 様 (${currentUser.role})`;
+      document.getElementById("user-info").innerText = `${currentUser.username} さん`;
       document.getElementById("edit-username").value = currentUser.username;
       
       const adminSection = document.getElementById("admin-section");
