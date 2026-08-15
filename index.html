@@ -17,13 +17,14 @@
     .btn-secondary:hover { background: #5a6268; }
     .btn-danger { background: #dc3545; }
     .btn-danger:hover { background: #bd2130; }
-    .hidden { display: none; }
+    .hidden { display: none !important; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
     .task-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
     .task-item.completed { text-decoration: line-through; color: #888; }
     .add-task-box { display: flex; gap: 10px; margin-bottom: 20px; }
     .add-task-box input { flex: 1; }
-    .admin-box { margin-top: 30px; padding-top: 20px; border-top: 2px dashed #007bff; }
+    .section-box { margin-top: 30px; padding-top: 20px; border-top: 2px dashed #ccc; }
+    .admin-box { border-top-color: #007bff; }
     .log-item { font-size: 13px; padding: 6px 0; border-bottom: 1px solid #f0f0f0; color: #444; }
     #message { margin-top: 15px; font-size: 14px; text-align: center; }
 
@@ -75,8 +76,8 @@
       </div>
 
       <!-- マスタユーザー専用：ユーザー絞り込みドロップダウン -->
-<div id="user-filter-box" class="filter-bar hidden">
-  <label for="user-select">表示ユーザー:</label>
+      <div id="user-filter-box" class="filter-bar hidden">
+        <label for="user-select">表示ユーザー:</label>
         <select id="user-select" onchange="renderTasks()">
           <option value="ALL">すべてのユーザー</option>
         </select>
@@ -84,8 +85,22 @@
 
       <div id="task-list">読み込み中...</div>
 
+      <!-- ユーザー設定変更エリア -->
+      <div class="section-box">
+        <h3>アカウント設定変更</h3>
+        <div class="form-group">
+          <label>新しいユーザー名</label>
+          <input type="text" id="edit-username">
+        </div>
+        <div class="form-group">
+          <label>新しいパスワード</label>
+          <input type="password" id="edit-password" placeholder="新しいパスワードを入力">
+        </div>
+        <button onclick="updateProfile()" class="btn-secondary">設定を変更する</button>
+      </div>
+
       <!-- マスタユーザー専用エリア -->
-      <div id="admin-section" class="admin-box hidden">
+      <div id="admin-section" class="section-box admin-box hidden">
         <h3>【マスタ機能】全体操作履歴</h3>
         <button onclick="loadLogs()" class="btn-secondary">履歴ログを更新</button>
         <div id="log-list" style="margin-top: 15px;">ボタンを押すと履歴を取得します</div>
@@ -96,7 +111,6 @@
   </div>
 
   <script>
-    // ★ご自身のGASの「ウェブアプリ URL」に書き換えてください！
     const GAS_URL = "https://script.google.com/macros/s/AKfycbwrujO1lvSsyCSYRpcbLxoLHhkziiVouQo4LQvK23QejUfYGCLEUuJNfxUJurGSTQuy/exec";
     let currentUser = null;
     let allTasksCache = [];
@@ -151,11 +165,11 @@
       document.getElementById("login-section").classList.add("hidden");
       document.getElementById("app-section").classList.remove("hidden");
       document.getElementById("user-info").innerText = `${currentUser.username} 様 (${currentUser.role})`;
+      document.getElementById("edit-username").value = currentUser.username;
       
       const adminSection = document.getElementById("admin-section");
       const userFilterBox = document.getElementById("user-filter-box");
 
-      // マスタユーザーのみ管理エリアとユーザー絞り込みを表示
       if (currentUser.role === "admin") {
         adminSection.classList.remove("hidden");
         userFilterBox.classList.remove("hidden");
@@ -183,11 +197,9 @@
         if (data.status === "success") {
           allTasksCache = data.tasks;
           
-          // ★修正ポイント：マスタユーザー（admin）の時だけプルダウンを生成する
           if (currentUser.role === "admin") {
             setupUserFilterOptions();
           } else {
-            // 一般ユーザーの場合はプルダウンの中身をクリアしておく
             document.getElementById("user-select").innerHTML = '<option value="ALL">すべてのユーザー</option>';
           }
 
@@ -198,7 +210,6 @@
       }
     }
 
-    // ユーザー選択肢の生成（マスタ用）
     function setupUserFilterOptions() {
       const select = document.getElementById("user-select");
       const currentSelected = select.value || "ALL";
@@ -229,12 +240,10 @@
       
       let filtered = allTasksCache;
 
-      // 1. 状態フィルター
       if (currentStatusTab !== "すべて") {
         filtered = filtered.filter(t => t.status === currentStatusTab);
       }
 
-      // 2. ユーザーフィルター（マスタユーザーのみ適用）
       if (currentUser.role === "admin") {
         const selectedUser = document.getElementById("user-select").value;
         if (selectedUser !== "ALL") {
@@ -308,6 +317,45 @@
       }
     }
 
+    // ユーザー情報変更処理
+    async function updateProfile() {
+      const newUsername = document.getElementById("edit-username").value.trim();
+      const newPassword = document.getElementById("edit-password").value.trim();
+
+      if (!newUsername || !newPassword) {
+        showMessage("ユーザー名とパスワードの両方を入力してください", "red");
+        return;
+      }
+
+      showMessage("更新中...", "#333");
+      try {
+        const res = await fetch(GAS_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "updateUserProfile",
+            userId: currentUser.id,
+            newUsername: newUsername,
+            newPassword: newPassword
+          })
+        });
+        const data = await res.json();
+
+        if (data.status === "success") {
+          currentUser.username = data.updatedUsername;
+          sessionStorage.setItem("user", JSON.stringify(currentUser));
+          document.getElementById("user-info").innerText = `${currentUser.username} 様 (${currentUser.role})`;
+          document.getElementById("edit-password").value = "";
+          showMessage("アカウント情報を更新しました！次回から新しい情報でログインしてください", "green");
+          if (currentUser.role === "admin") loadLogs();
+        } else {
+          showMessage(data.message, "red");
+        }
+      } catch (err) {
+        showMessage("更新に失敗しました", "red");
+      }
+    }
+
     async function loadLogs() {
       const logListDiv = document.getElementById("log-list");
       logListDiv.innerHTML = "履歴を取得中...";
@@ -349,6 +397,6 @@
     function escapeHtml(str) {
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
-    </script>
+  </script>
 </body>
 </html>
