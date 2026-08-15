@@ -731,15 +731,21 @@ async function submitBatchChanges() {
       body: JSON.stringify({
         action: "applyBatchChanges",
         userId: currentUser.id,
-        userEmail: currentUser.email, // 通知先メールアドレス
+        userEmail: currentUser.email, // ユーザーのメールアドレスを送る
         changes: pendingChanges
       })
     });
     
-    pendingChanges = [];
-    updatePendingUI();
-    showMessage("反映とメール送信が完了しました！", "#16a34a");
-    loadTasks();
+    const data = await res.json();
+    if (data.status === "success") {
+      pendingChanges = [];
+      updatePendingUI();
+      showMessage("反映とメール送信が完了しました！", "#16a34a");
+      loadTasks();
+      if (currentUser.role === "admin") loadLogs();
+    } else {
+      showMessage("エラー: " + data.message, "#e11d48");
+    }
   } catch (err) {
     showMessage("反映に失敗しました", "#e11d48");
   }
