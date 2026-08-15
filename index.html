@@ -310,11 +310,17 @@ button:hover {
       </div>
 
       <!-- マスタユーザー専用エリア -->
-      <div id="admin-section" class="section-box admin-box hidden">
-        <h3>【マスタ機能】全体操作履歴</h3>
-        <button onclick="loadLogs()" class="btn-secondary" style="margin-bottom: 12px; width: 100%;">履歴ログを更新</button>
-        <div id="log-list">ボタンを押すと履歴を取得します</div>
-      </div>
+<!-- マスタユーザー専用エリア -->
+<div id="admin-section" class="section-box admin-box hidden">
+  <button onclick="toggleAccordion('admin-log-box')" class="btn-secondary accordion-toggle">
+    <span>📜 【マスタ機能】全体操作履歴</span>
+    <span style="font-size: 0.75rem;">▽</span>
+  </button>
+  <div id="admin-log-box" class="hidden" style="margin-top: 16px;">
+    <button onclick="loadLogs()" class="btn-secondary" style="margin-bottom: 12px; width: 100%;">履歴ログを最新に更新</button>
+    <div id="log-list">ボタンを押すと履歴を取得します</div>
+  </div>
+</div>
     </div>
 
     <div id="message"></div>
@@ -371,26 +377,26 @@ button:hover {
       showMessage("ログアウトしました", "#059669");
     }
 
-    function showApp() {
-      document.getElementById("login-section").classList.add("hidden");
-      document.getElementById("app-section").classList.remove("hidden");
-      document.getElementById("user-info").innerText = `${currentUser.username} さん`;
-      document.getElementById("edit-username").value = currentUser.username;
-      
-      const adminSection = document.getElementById("admin-section");
-      const userFilterBox = document.getElementById("user-filter-box");
+function showApp() {
+  document.getElementById("login-section").classList.add("hidden");
+  document.getElementById("app-section").classList.remove("hidden");
+  document.getElementById("user-info").innerText = `${currentUser.username} さん`;
+  document.getElementById("edit-username").value = currentUser.username;
+  
+  const adminSection = document.getElementById("admin-section");
+  const userFilterBox = document.getElementById("user-filter-box");
 
-      if (currentUser.role === "admin") {
-        adminSection.classList.remove("hidden");
-        userFilterBox.classList.remove("hidden");
-        loadLogs();
-      } else {
-        adminSection.classList.add("hidden");
-        userFilterBox.classList.add("hidden");
-      }
+  if (currentUser.role === "admin") {
+    adminSection.classList.remove("hidden");
+    userFilterBox.classList.remove("hidden");
+    loadLogs(); // バックグラウンドでログを取得しておきます
+  } else {
+    adminSection.classList.add("hidden");
+    userFilterBox.classList.add("hidden");
+  }
 
-      loadTasks();
-    }
+  loadTasks();
+}
 
     async function loadTasks() {
       const taskListDiv = document.getElementById("task-list");
