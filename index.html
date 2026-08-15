@@ -273,12 +273,22 @@ button:hover {
 
       <h3>タスク一覧</h3>
 
-      <!-- 状態切り替えタブ -->
-      <div class="tabs">
-        <button id="tab-uncompleted" class="tab-btn active" onclick="switchStatusTab('未完了')">未完了</button>
-        <button id="tab-completed" class="tab-btn" onclick="switchStatusTab('完了')">完了</button>
-        <button id="tab-all" class="tab-btn" onclick="switchStatusTab('すべて')">すべて</button>
-      </div>
+<!-- 状態切り替えタブ -->
+<div class="tabs">
+  <button id="tab-uncompleted" class="tab-btn active" onclick="switchStatusTab('未完了')">未完了</button>
+  <button id="tab-completed" class="tab-btn" onclick="switchStatusTab('完了')">完了</button>
+  <button id="tab-all" class="tab-btn" onclick="switchStatusTab('すべて')">すべて</button>
+</div>
+
+<!-- 検索窓（トグル展開式） -->
+<div style="margin-bottom: 12px; text-align: right;">
+  <button onclick="toggleAccordion('search-box')" class="btn-secondary" style="font-size: 0.75rem; padding: 4px 8px;">
+    🔍 検索画面を開く/閉じる
+  </button>
+</div>
+<div id="search-box" class="hidden" style="margin-bottom: 16px;">
+  <input type="text" id="task-search-input" placeholder="タスク名で検索..." oninput="renderTasks()">
+</div>
 
       <!-- マスタユーザー専用：ユーザー絞り込みドロップダウン -->
       <div id="user-filter-box" class="filter-bar hidden">
