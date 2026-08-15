@@ -10,7 +10,7 @@
     h2, h3 { margin-top: 0; color: #333; }
     .form-group { margin-bottom: 15px; }
     label { display: block; margin-bottom: 5px; color: #666; font-size: 14px; }
-    input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+    input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
     button { padding: 8px 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
     button:hover { background: #0056b3; }
     .btn-secondary { background: #6c757d; }
@@ -26,6 +26,13 @@
     .admin-box { margin-top: 30px; padding-top: 20px; border-top: 2px dashed #007bff; }
     .log-item { font-size: 13px; padding: 6px 0; border-bottom: 1px solid #f0f0f0; color: #444; }
     #message { margin-top: 15px; font-size: 14px; text-align: center; }
+
+    /* タブデザイン */
+    .tabs { display: flex; border-bottom: 2px solid #ccc; margin-bottom: 15px; }
+    .tab-btn { padding: 8px 16px; background: none; border: none; color: #666; font-weight: bold; cursor: pointer; border-bottom: 3px solid transparent; border-radius: 0; }
+    .tab-btn.active { color: #007bff; border-bottom-color: #007bff; }
+    .filter-bar { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; font-size: 14px; }
+    .filter-bar select { width: auto; flex: 1; }
   </style>
 </head>
 <body>
@@ -59,6 +66,22 @@
       </div>
 
       <h3>タスク一覧</h3>
+
+      <!-- 状態切り替えタブ -->
+      <div class="tabs">
+        <button id="tab-uncompleted" class="tab-btn active" onclick="switchStatusTab('未完了')">未完了</button>
+        <button id="tab-completed" class="tab-btn" onclick="switchStatusTab('完了')">完了</button>
+        <button id="tab-all" class="tab-btn" onclick="switchStatusTab('すべて')">すべて</button>
+      </div>
+
+      <!-- マスタユーザー専用：ユーザー絞り込みドロップダウン -->
+      <div id="user-filter-box" class="filter-bar hidden">
+        <label for="user-select">表示ユーザー:</label>
+        <select id="user-select" onchange="renderTasks()">
+          <option value="ALL">すべてのユーザー</option>
+        </select>
+      </div>
+
       <div id="task-list">読み込み中...</div>
 
       <!-- マスタユーザー専用エリア -->
@@ -73,8 +96,11 @@
   </div>
 
   <script>
+    // ★ご自身のGASの「ウェブアプリ URL」に書き換えてください！
     const GAS_URL = "https://script.google.com/macros/s/AKfycbwrujO1lvSsyCSYRpcbLxoLHhkziiVouQo4LQvK23QejUfYGCLEUuJNfxUJurGSTQuy/exec";
     let currentUser = null;
+    let allTasksCache = []; // 取得したタスクを保持するキャッシュ
+    let currentStatusTab = "未完了";
 
     window.onload = () => {
       const savedUser = sessionStorage.getItem("user");
@@ -125,17 +151,19 @@
       document.getElementById("app-section").classList.remove("hidden");
       document.getElementById("user-info").innerText = `${currentUser.username} 様 (${currentUser.role})`;
       
-      // マスタユーザーのみ管理エリアを表示
       if (currentUser.role === "admin") {
         document.getElementById("admin-section").classList.remove("hidden");
+        document.getElementById("user-filter-box").classList.remove("hidden");
         loadLogs();
       } else {
         document.getElementById("admin-section").classList.add("hidden");
+        document.getElementById("user-filter-box").classList.add("hidden");
       }
 
       loadTasks();
     }
 
+    // タスク一覧を取得
     async function loadTasks() {
       const taskListDiv = document.getElementById("task-list");
       taskListDiv.innerHTML = "読み込み中...";
@@ -149,30 +177,84 @@
         const data = await res.json();
 
         if (data.status === "success") {
-          if (data.tasks.length === 0) {
-            taskListDiv.innerHTML = "<p>タスクはありません</p>";
-            return;
+          allTasksCache = data.tasks;
+          
+          // マスタユーザーの場合、ユーザー選択肢を動的に生成
+          if (currentUser.role === "admin") {
+            setupUserFilterOptions();
           }
-          taskListDiv.innerHTML = "";
-          data.tasks.forEach(task => {
-            const item = document.createElement("div");
-            item.className = `task-item ${task.status === '完了' ? 'completed' : ''}`;
-            
-            // マスタの場合は誰のタスクかも表示
-            const ownerText = currentUser.role === "admin" ? `<small>[ユーザーID: ${task.userId}]</small> ` : "";
-            
-            item.innerHTML = `
-              <span>${ownerText}${escapeHtml(task.title)} <small>(${task.status})</small></span>
-              <button onclick="toggleTaskStatus('${task.id}', '${task.status}')">
-                ${task.status === '完了' ? '未完了に戻す' : '完了にする'}
-              </button>
-            `;
-            taskListDiv.appendChild(item);
-          });
+
+          renderTasks();
         }
       } catch (err) {
         taskListDiv.innerHTML = "タスクの取得に失敗しました";
       }
+    }
+
+    // ユーザー選択肢の生成（マスタ用）
+    function setupUserFilterOptions() {
+      const select = document.getElementById("user-select");
+      const currentSelected = select.value;
+      select.innerHTML = '<option value="ALL">すべてのユーザー</option>';
+
+      const userIds = [...new Set(allTasksCache.map(t => t.userId))];
+      userIds.forEach(uid => {
+        const opt = document.createElement("option");
+        opt.value = uid;
+        opt.innerText = `ユーザーID: ${uid}`;
+        select.appendChild(opt);
+      });
+
+      select.value = currentSelected;
+    }
+
+    // 状態タブ切り替え
+    function switchStatusTab(status) {
+      currentStatusTab = status;
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      if (status === '未完了') document.getElementById("tab-uncompleted").classList.add("active");
+      if (status === '完了') document.getElementById("tab-completed").classList.add("active");
+      if (status === 'すべて') document.getElementById("tab-all").classList.add("active");
+      renderTasks();
+    }
+
+    // フィルターを適用して画面描画
+    function renderTasks() {
+      const taskListDiv = document.getElementById("task-list");
+      const selectedUser = currentUser.role === "admin" ? document.getElementById("user-select").value : "ALL";
+
+      let filtered = allTasksCache;
+
+      // 1. 状態フィルター
+      if (currentStatusTab !== "すべて") {
+        filtered = filtered.filter(t => t.status === currentStatusTab);
+      }
+
+      // 2. ユーザーフィルター（マスタ用）
+      if (selectedUser !== "ALL") {
+        filtered = filtered.filter(t => t.userId === selectedUser);
+      }
+
+      if (filtered.length === 0) {
+        taskListDiv.innerHTML = "<p>該当するタスクはありません</p>";
+        return;
+      }
+
+      taskListDiv.innerHTML = "";
+      filtered.forEach(task => {
+        const item = document.createElement("div");
+        item.className = `task-item ${task.status === '完了' ? 'completed' : ''}`;
+        
+        const ownerText = currentUser.role === "admin" ? `<small>[${task.userId}]</small> ` : "";
+        
+        item.innerHTML = `
+          <span>${ownerText}${escapeHtml(task.title)} <small>(${task.status})</small></span>
+          <button onclick="toggleTaskStatus('${task.id}', '${task.status}')">
+            ${task.status === '完了' ? '未完了に戻す' : '完了にする'}
+          </button>
+        `;
+        taskListDiv.appendChild(item);
+      });
     }
 
     async function createTask() {
@@ -219,7 +301,6 @@
       }
     }
 
-    // マスタ用：履歴ログの取得
     async function loadLogs() {
       const logListDiv = document.getElementById("log-list");
       logListDiv.innerHTML = "履歴を取得中...";
