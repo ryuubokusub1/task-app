@@ -468,45 +468,52 @@ function setupUserFilterOptions() {
       renderTasks();
     }
 
-    function renderTasks() {
-      const taskListDiv = document.getElementById("task-list");
-      
-      let filtered = allTasksCache;
+function renderTasks() {
+  const taskListDiv = document.getElementById("task-list");
+  const searchQuery = document.getElementById("task-search-input")?.value.trim().toLowerCase() || "";
+  
+  let filtered = allTasksCache;
 
-      if (currentStatusTab !== "すべて") {
-        filtered = filtered.filter(t => t.status === currentStatusTab);
-      }
+  // 1. タブによる絞り込み
+  if (currentStatusTab !== "すべて") {
+    filtered = filtered.filter(t => t.status === currentStatusTab);
+  }
 
-      if (currentUser.role === "admin") {
-        const selectedUser = document.getElementById("user-select").value;
-        if (selectedUser !== "ALL") {
-          filtered = filtered.filter(t => t.userId === selectedUser);
-        }
-      }
-
-      if (filtered.length === 0) {
-        taskListDiv.innerHTML = '<div class="empty-state">該当するタスクはありません</div>';
-        return;
-      }
-
-      taskListDiv.innerHTML = "";
-      filtered.forEach(task => {
-        const item = document.createElement("div");
-        item.className = `task-item ${task.status === '完了' ? 'completed' : ''}`;
-        
-// task.username が入ってくる想定でユーザー名を表示します
-const ownerText = currentUser.role === "admin" ? `<small style="color:var(--text-muted);">(${escapeHtml(task.username || task.userId)})</small> ` : "";
-const isCompleted = task.status === '完了';
-
-item.innerHTML = `
-  <span>${ownerText}${escapeHtml(task.title)}</span>
-  <button class="${isCompleted ? 'btn-secondary' : ''}" onclick="toggleTaskStatus('${task.id}', '${task.status}')">
-    ${isCompleted ? '未完了に戻す' : '✓ 完了'}
-  </button>
-`;
-        taskListDiv.appendChild(item);
-      });
+  // 2. マスタユーザーの選択による絞り込み
+  if (currentUser.role === "admin") {
+    const selectedUser = document.getElementById("user-select").value;
+    if (selectedUser !== "ALL") {
+      filtered = filtered.filter(t => t.userId === selectedUser);
     }
+  }
+
+  // 3. 検索窓のキーワードによる絞り込み
+  if (searchQuery) {
+    filtered = filtered.filter(t => t.title && t.title.toLowerCase().includes(searchQuery));
+  }
+
+  if (filtered.length === 0) {
+    taskListDiv.innerHTML = '<div class="empty-state">該当するタスクはありません</div>';
+    return;
+  }
+
+  taskListDiv.innerHTML = "";
+  filtered.forEach(task => {
+    const item = document.createElement("div");
+    item.className = `task-item ${task.status === '完了' ? 'completed' : ''}`;
+    
+    const ownerText = currentUser.role === "admin" ? `<small style="color:var(--text-muted);">(${escapeHtml(task.username || task.userId)})</small> ` : "";
+    const isCompleted = task.status === '完了';
+
+    item.innerHTML = `
+      <span>${ownerText}${escapeHtml(task.title)}</span>
+      <button class="${isCompleted ? 'btn-secondary' : ''}" onclick="toggleTaskStatus('${task.id}', '${task.status}')">
+        ${isCompleted ? '未完了に戻す' : '✓ 完了'}
+      </button>
+    `;
+    taskListDiv.appendChild(item);
+  });
+}
 
     async function createTask() {
       const input = document.getElementById("new-task-title");
