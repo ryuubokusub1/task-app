@@ -477,7 +477,7 @@ button:hover {
         item.innerHTML = `
           <span>${ownerText}${escapeHtml(task.title)}</span>
           <button class="${isCompleted ? 'btn-secondary' : ''}" onclick="toggleTaskStatus('${task.id}', '${task.status}')">
-            ${isCompleted ? '未完了に戻す' : '完了にする'}
+            ${isCompleted ? '元に戻す' : '✓ 完了'}
           </button>
         `;
         taskListDiv.appendChild(item);
