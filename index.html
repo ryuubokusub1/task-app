@@ -247,6 +247,18 @@ button:hover {
   align-items: center;
   gap: 8px;
 }
+    /* スタイル追加 */
+.btn-primary {
+  background-color: var(--accent);
+  color: #ffffff;
+}
+.btn-primary:hover:not(:disabled) {
+  background-color: #4f46e5;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
   </style>
 </head>
 <body>
@@ -375,13 +387,15 @@ button:hover {
         });
         const data = await res.json();
 
-        if (data.status === "success") {
-          currentUser = data.user;
-          sessionStorage.setItem("user", JSON.stringify(data.user));
-          sessionStorage.setItem("token", data.token);
-          showMessage("", "");
-          showApp();
-        } else {
+// login() 関数内
+if (data.status === "success") {
+  currentUser = data.user;
+  // バックエンドからのレスポンスに email が含まれていることを確認し保存
+  sessionStorage.setItem("user", JSON.stringify(data.user));
+  sessionStorage.setItem("token", data.token);
+  showMessage("", "");
+  showApp();
+} else {
           showMessage(data.message, "#e11d48");
         }
       } catch (err) {
@@ -519,7 +533,7 @@ function renderTasks() {
 
     item.innerHTML = `
       <span>${ownerText}${escapeHtml(task.title)}</span>
-      <button class="${isCompleted ? 'btn-secondary' : ''}" onclick="toggleTaskStatus('${task.id}', '${task.status}')">
+      <button class="${isCompleted ? 'btn-secondary' : ''}" onclick="toggleTaskStatusLocal('${task.id}', '${task.status}')">
         ${isCompleted ? '未完了に戻す' : '✓ 完了'}
       </button>
     `;
@@ -551,7 +565,7 @@ function renderTasks() {
       }
     }
 
-    async function toggleTaskStatus(taskId, currentStatus) {
+    async function toggleTaskStatusLocal(taskId, currentStatus) {
       const newStatus = currentStatus === "完了" ? "未完了" : "完了";
       showMessage("更新中...", "#475569");
       try {
