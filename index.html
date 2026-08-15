@@ -562,7 +562,7 @@ item.innerHTML = `
         if (data.status === "success") {
           currentUser.username = data.updatedUsername;
           sessionStorage.setItem("user", JSON.stringify(currentUser));
-          document.getElementById("user-info").innerText = `${currentUser.username} 様`;
+          document.getElementById("user-info").innerText = `${currentUser.username} さん`;
           document.getElementById("edit-password").value = "";
           showMessage("アカウント情報を更新しました！次回から新しい情報でログインしてください", "#059669");
           if (currentUser.role === "admin") loadLogs();
