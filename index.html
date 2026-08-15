@@ -360,7 +360,7 @@
       }
     }
 
-    async function loadLogs() {
+async function loadLogs() {
       const logListDiv = document.getElementById("log-list");
       logListDiv.innerHTML = "履歴を取得中...";
 
@@ -381,7 +381,11 @@
           data.logs.forEach(log => {
             const item = document.createElement("div");
             item.className = "log-item";
-            item.innerHTML = `<strong>[${log.timestamp}]</strong> (ユーザー: ${log.userId}) ${escapeHtml(log.action)}`;
+            
+            // ISO文字列等の日時を yyyy-mm-dd hh:mm:ss 形式へ変換
+            const formattedTime = formatTimestamp(log.timestamp);
+            
+            item.innerHTML = `<strong>[${formattedTime}]</strong> (ユーザー: ${log.userId}) ${escapeHtml(log.action)}`;
             logListDiv.appendChild(item);
           });
         } else {
@@ -392,6 +396,22 @@
       }
     }
 
+    // 日時整形用関数
+    function formatTimestamp(ts) {
+      if (!ts) return "";
+      const d = new Date(ts);
+      if (isNaN(d.getTime())) return ts; // 変換できない場合はそのまま表示
+
+      const pad = n => String(n).padStart(2, '0');
+      const YYYY = d.getFullYear();
+      const MM = pad(d.getMonth() + 1);
+      const DD = pad(d.getDate());
+      const hh = pad(d.getHours());
+      const mm = pad(d.getMinutes());
+      const ss = pad(d.getSeconds());
+
+      return `${YYYY}-${MM}-${DD} ${hh}:${mm}:${ss}`;
+    }
     function showMessage(msg, color) {
       const messageDiv = document.getElementById("message");
       messageDiv.style.color = color;
