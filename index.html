@@ -728,12 +728,13 @@ async function submitBatchChanges() {
     const res = await fetch(GAS_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({
-        action: "applyBatchChanges",
-        userId: currentUser.id,
-        userEmail: currentUser.email, // ユーザーのメールアドレスを送る
-        changes: pendingChanges
-      })
+body: JSON.stringify({
+  action: "applyBatchChanges",
+  userId: currentUser.id,
+  userEmail: currentUser.email,
+  userPrompt: currentUser.prompt, // カスタムプロンプトを追加
+  changes: pendingChanges
+})
     });
     
     const data = await res.json();
