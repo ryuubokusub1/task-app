@@ -99,7 +99,7 @@
     // ★ご自身のGASの「ウェブアプリ URL」に書き換えてください！
     const GAS_URL = "https://script.google.com/macros/s/AKfycbwrujO1lvSsyCSYRpcbLxoLHhkziiVouQo4LQvK23QejUfYGCLEUuJNfxUJurGSTQuy/exec";
     let currentUser = null;
-    let allTasksCache = []; // 取得したタスクを保持するキャッシュ
+    let allTasksCache = [];
     let currentStatusTab = "未完了";
 
     window.onload = () => {
@@ -142,19 +142,20 @@
       currentUser = null;
       document.getElementById("app-section").classList.add("hidden");
       document.getElementById("admin-section").classList.add("hidden");
+      document.getElementById("user-filter-box").classList.add("hidden");
       document.getElementById("login-section").classList.remove("hidden");
       showMessage("ログアウトしました", "green");
     }
 
-function showApp() {
+    function showApp() {
       document.getElementById("login-section").classList.add("hidden");
       document.getElementById("app-section").classList.remove("hidden");
       document.getElementById("user-info").innerText = `${currentUser.username} 様 (${currentUser.role})`;
       
-      // マスタユーザーのみ管理エリアとユーザー絞り込みを表示
       const adminSection = document.getElementById("admin-section");
       const userFilterBox = document.getElementById("user-filter-box");
 
+      // マスタユーザーのみ管理エリアとユーザー絞り込みを表示
       if (currentUser.role === "admin") {
         adminSection.classList.remove("hidden");
         userFilterBox.classList.remove("hidden");
@@ -167,7 +168,6 @@ function showApp() {
       loadTasks();
     }
 
-    // タスク一覧を取得
     async function loadTasks() {
       const taskListDiv = document.getElementById("task-list");
       taskListDiv.innerHTML = "読み込み中...";
@@ -183,9 +183,12 @@ function showApp() {
         if (data.status === "success") {
           allTasksCache = data.tasks;
           
-          // マスタユーザーの場合、ユーザー選択肢を動的に生成
+          // ★修正ポイント：マスタユーザー（admin）の時だけプルダウンを生成する
           if (currentUser.role === "admin") {
             setupUserFilterOptions();
+          } else {
+            // 一般ユーザーの場合はプルダウンの中身をクリアしておく
+            document.getElementById("user-select").innerHTML = '<option value="ALL">すべてのユーザー</option>';
           }
 
           renderTasks();
@@ -198,7 +201,7 @@ function showApp() {
     // ユーザー選択肢の生成（マスタ用）
     function setupUserFilterOptions() {
       const select = document.getElementById("user-select");
-      const currentSelected = select.value;
+      const currentSelected = select.value || "ALL";
       select.innerHTML = '<option value="ALL">すべてのユーザー</option>';
 
       const userIds = [...new Set(allTasksCache.map(t => t.userId))];
@@ -212,7 +215,6 @@ function showApp() {
       select.value = currentSelected;
     }
 
-    // 状態タブ切り替え
     function switchStatusTab(status) {
       currentStatusTab = status;
       document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
@@ -222,11 +224,9 @@ function showApp() {
       renderTasks();
     }
 
-    // フィルターを適用して画面描画
     function renderTasks() {
       const taskListDiv = document.getElementById("task-list");
-      const selectedUser = currentUser.role === "admin" ? document.getElementById("user-select").value : "ALL";
-
+      
       let filtered = allTasksCache;
 
       // 1. 状態フィルター
@@ -234,9 +234,12 @@ function showApp() {
         filtered = filtered.filter(t => t.status === currentStatusTab);
       }
 
-      // 2. ユーザーフィルター（マスタ用）
-      if (selectedUser !== "ALL") {
-        filtered = filtered.filter(t => t.userId === selectedUser);
+      // 2. ユーザーフィルター（マスタユーザーのみ適用）
+      if (currentUser.role === "admin") {
+        const selectedUser = document.getElementById("user-select").value;
+        if (selectedUser !== "ALL") {
+          filtered = filtered.filter(t => t.userId === selectedUser);
+        }
       }
 
       if (filtered.length === 0) {
@@ -346,6 +349,6 @@ function showApp() {
     function escapeHtml(str) {
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
-  </script>
+    </script>
 </body>
 </html>
