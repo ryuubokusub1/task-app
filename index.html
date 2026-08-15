@@ -420,21 +420,28 @@ button:hover {
       }
     }
 
-    function setupUserFilterOptions() {
-      const select = document.getElementById("user-select");
-      const currentSelected = select.value || "ALL";
-      select.innerHTML = '<option value="ALL">すべてのユーザー</option>';
+function setupUserFilterOptions() {
+  const select = document.getElementById("user-select");
+  const currentSelected = select.value || "ALL";
+  select.innerHTML = '<option value="ALL">すべてのユーザー</option>';
 
-      const userIds = [...new Set(allTasksCache.map(t => t.userId))];
-      userIds.forEach(uid => {
-        const opt = document.createElement("option");
-        opt.value = uid;
-        opt.innerText = `ユーザーID: ${uid}`;
-        select.appendChild(opt);
-      });
-
-      select.value = currentSelected;
+  // 一重化されたユーザー情報のリストを取得（userId と username のペア）
+  const userMap = new Map();
+  allTasksCache.forEach(t => {
+    if (t.userId && !userMap.has(t.userId)) {
+      userMap.set(t.userId, t.username || t.userId);
     }
+  });
+
+  userMap.forEach((name, uid) => {
+    const opt = document.createElement("option");
+    opt.value = uid; // 内部処理用の値は userId のまま
+    opt.innerText = name; // 表示ラベルを ユーザー名 に変更
+    select.appendChild(opt);
+  });
+
+  select.value = currentSelected;
+}
 
     function switchStatusTab(status) {
       currentStatusTab = status;
@@ -471,15 +478,16 @@ button:hover {
         const item = document.createElement("div");
         item.className = `task-item ${task.status === '完了' ? 'completed' : ''}`;
         
-        const ownerText = currentUser.role === "admin" ? `<small style="color:var(--text-muted);">[${task.userId}]</small> ` : "";
-        const isCompleted = task.status === '完了';
-        
-        item.innerHTML = `
-          <span>${ownerText}${escapeHtml(task.title)}</span>
-          <button class="${isCompleted ? 'btn-secondary' : ''}" onclick="toggleTaskStatus('${task.id}', '${task.status}')">
-            ${isCompleted ? '未完了に戻す' : '完了にする'}
-          </button>
-        `;
+// task.username が入ってくる想定でユーザー名を表示します
+const ownerText = currentUser.role === "admin" ? `<small style="color:var(--text-muted);">(${escapeHtml(task.username || task.userId)})</small> ` : "";
+const isCompleted = task.status === '完了';
+
+item.innerHTML = `
+  <span>${ownerText}${escapeHtml(task.title)}</span>
+  <button class="${isCompleted ? 'btn-secondary' : ''}" onclick="toggleTaskStatus('${task.id}', '${task.status}')">
+    ${isCompleted ? '未完了に戻す' : '✓ 完了'}
+  </button>
+`;
         taskListDiv.appendChild(item);
       });
     }
@@ -590,7 +598,9 @@ button:hover {
             
             const formattedTime = formatTimestamp(log.timestamp);
             
-            item.innerHTML = `<strong>[${formattedTime}]</strong> <span style="color: var(--text-muted);">(ユーザー: ${log.userId})</span> ${escapeHtml(log.action)}`;
+// log.username が取得できている場合はそちらを表示します
+const displayUser = log.username || log.userId;
+item.innerHTML = `<strong>[${formattedTime}]</strong> <span style="color: var(--text-muted);">(ユーザー: ${escapeHtml(displayUser)})</span> ${escapeHtml(log.action)}`;
             logListDiv.appendChild(item);
           });
         } else {
