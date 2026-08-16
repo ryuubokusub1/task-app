@@ -4,9 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>タスク管理アプリ</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap"
     rel="stylesheet">
@@ -23,11 +26,17 @@
       --border-color: #e2e8f0;
       --border-hover: #cbd5e1;
       --radius: 10px;
-      --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+      --shadow-subtle:
+        0 1px 3px 0 rgba(0, 0, 0, 0.05),
+        0 1px 2px -1px rgba(0, 0, 0, 0.05);
       --transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
@@ -68,7 +77,9 @@
       margin-bottom: 12px;
     }
 
-    .form-group { margin-bottom: 16px; }
+    .form-group {
+      margin-bottom: 16px;
+    }
 
     label {
       display: block;
@@ -80,7 +91,9 @@
       letter-spacing: 0.05em;
     }
 
-    input, select, textarea {
+    input,
+    select,
+    textarea {
       width: 100%;
       padding: 10px 14px;
       border: 1px solid var(--border-color);
@@ -93,7 +106,9 @@
       font-family: inherit;
     }
 
-    input:focus, select:focus, textarea:focus {
+    input:focus,
+    select:focus,
+    textarea:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
     }
@@ -113,7 +128,9 @@
       justify-content: center;
     }
 
-    button:hover { background-color: var(--primary-hover); }
+    button:hover:not(:disabled) {
+      background-color: var(--primary-hover);
+    }
 
     .btn-secondary {
       background-color: #ffffff;
@@ -121,7 +138,7 @@
       border: 1px solid var(--border-color);
     }
 
-    .btn-secondary:hover {
+    .btn-secondary:hover:not(:disabled) {
       background-color: #f8fafc;
       border-color: var(--border-hover);
     }
@@ -132,11 +149,28 @@
       border: 1px solid #fee2e2;
     }
 
-    .btn-danger:hover { background-color: #fef2f2; }
+    .btn-danger:hover:not(:disabled) {
+      background-color: #fef2f2;
+    }
 
-    .hidden { display: none !important; }
+    .btn-primary {
+      background-color: var(--accent);
+      color: #ffffff;
+    }
 
-    /* メッセージ上部表示 */
+    .btn-primary:hover:not(:disabled) {
+      background-color: #4f46e5;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
     #message-top {
       font-size: 0.85rem;
       font-weight: 600;
@@ -150,7 +184,6 @@
       justify-content: center;
     }
 
-    /* AIアシスタント 吹き出し＋画像エリア */
     .ai-assistant-card {
       display: flex;
       align-items: flex-start;
@@ -180,8 +213,9 @@
       color: var(--text-main);
       border: 1px solid var(--border-color);
       box-shadow: var(--shadow-subtle);
-      line-height: 1.4;
+      line-height: 1.5;
       flex: 1;
+      min-height: 44px;
     }
 
     .ai-speech-bubble::before {
@@ -196,7 +230,6 @@
       border-right: 8px solid #ffffff;
     }
 
-    /* ヘッダー */
     .header {
       display: flex;
       justify-content: space-between;
@@ -204,6 +237,7 @@
       margin-bottom: 20px;
       padding-bottom: 12px;
       border-bottom: 1px solid var(--border-color);
+      gap: 12px;
     }
 
     #user-info {
@@ -212,8 +246,15 @@
       color: var(--text-muted);
     }
 
-    .add-task-box { display: flex; gap: 8px; margin-bottom: 28px; }
-    .add-task-box input { flex: 1; }
+    .add-task-box {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .add-task-box input {
+      flex: 1;
+    }
 
     .tabs {
       display: flex;
@@ -236,13 +277,21 @@
       border-radius: 6px;
     }
 
+    .tab-btn:hover:not(:disabled) {
+      background: #e2e8f0;
+    }
+
     .tab-btn.active {
       color: var(--text-main);
       background: #ffffff;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
     }
 
-    #task-list { display: flex; flex-direction: column; gap: 6px; }
+    #task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
 
     .task-item {
       display: flex;
@@ -253,10 +302,30 @@
       border-radius: var(--radius);
       background: #ffffff;
       transition: var(--transition);
+      gap: 12px;
     }
 
-    .task-item:hover { border-color: var(--border-hover); }
-    .task-item.completed span { text-decoration: line-through; color: #94a3b8; }
+    .task-item:hover {
+      border-color: var(--border-hover);
+    }
+
+    .task-item.completed span {
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+
+    .task-title {
+      flex: 1;
+      min-width: 0;
+      word-break: break-word;
+      line-height: 1.5;
+    }
+
+    .task-owner {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-right: 4px;
+    }
 
     .empty-state {
       text-align: center;
@@ -287,515 +356,1922 @@
       gap: 8px;
     }
 
-    .btn-primary { background-color: var(--accent); color: #ffffff; }
-    .btn-primary:hover:not(:disabled) { background-color: #4f46e5; }
+    .filter-bar select {
+      flex: 1;
+    }
 
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .log-item {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    .log-item:last-child {
+      border-bottom: none;
+    }
+
+    .admin-badge {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4f46e5;
+      font-size: 0.65rem;
+      font-weight: 700;
+    }
+
+    .login-note {
+      margin-top: 12px;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    @media (max-width: 560px) {
+      body {
+        padding: 16px 8px;
+      }
+
+      .container {
+        padding: 22px 16px;
+      }
+
+      .header {
+        align-items: flex-start;
+      }
+
+      .task-item {
+        align-items: flex-start;
+      }
+
+      .task-item button {
+        flex-shrink: 0;
+      }
+
+      .filter-bar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .filter-bar select {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 
 <body>
 
   <div class="container">
-    <!-- 最上部メッセージ表示エリア -->
+
     <div id="message-top"></div>
 
-    <!-- ログイン画面 -->
+    <!-- ログイン -->
     <div id="login-section">
+
       <h2>ログイン</h2>
+
       <div class="form-group">
-        <label>ユーザー名</label>
-        <input type="text" id="username" value="管理人">
+        <label for="username">ユーザー名</label>
+        <input type="text" id="username" value="管理人" autocomplete="username">
       </div>
+
       <div class="form-group">
-        <label>パスワード</label>
-        <input type="password" id="password" value="admin123">
+        <label for="password">パスワード</label>
+        <input type="password" id="password" value="admin123" autocomplete="current-password">
       </div>
-      <button onclick="login()" style="width: 100%; margin-top: 8px;">ログイン</button>
+
+      <button onclick="login()" id="login-button" style="width: 100%; margin-top: 8px;">
+        ログイン
+      </button>
+
+      <div class="login-note">
+        ログイン情報は安全に管理してください。
+      </div>
+
     </div>
 
-    <!-- アプリメイン画面 -->
+    <!-- アプリ -->
     <div id="app-section" class="hidden">
+
       <div class="header">
         <span id="user-info">ようこそ！</span>
-        <button onclick="logout()" class="btn-danger">ログアウト</button>
+
+        <button onclick="logout()" class="btn-danger">
+          ログアウト
+        </button>
       </div>
 
-      <!-- AIアシスタント領域（画像＋ふきだし） -->
+      <!-- AI -->
       <div class="ai-assistant-card">
-<img id="ai-avatar-img" class="ai-avatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23cbd5e1'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='32' fill='%230f172a'>AI</text></svg>" alt="AI Icon">
-        <div id="ai-bubble-text" class="ai-speech-bubble">おかえりなさい！今日もタスク管理を頑張りましょう！</div>
+
+        <img
+          id="ai-avatar-img"
+          class="ai-avatar"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23cbd5e1'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='32' fill='%230f172a'>AI</text></svg>"
+          alt="AI Icon"
+          onerror="this.src=createDefaultAvatar();"
+        >
+
+        <div id="ai-bubble-text" class="ai-speech-bubble">
+          おかえりなさい！今日もタスク管理を頑張りましょう！
+        </div>
+
       </div>
 
-      <!-- 一括反映バー -->
-      <div id="batch-bar"
-        style="margin-bottom: 16px; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-        <span>未反映の変更: <strong id="pending-count">0</strong> 件</span>
-        <button id="btn-submit" class="btn-primary" onclick="submitBatchChanges()" disabled>変更を反映する</button>
+      <!-- 一括反映 -->
+      <div
+        id="batch-bar"
+        style="
+          margin-bottom: 16px;
+          padding: 12px;
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 8px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 12px;
+        "
+      >
+
+        <span>
+          未反映の変更:
+          <strong id="pending-count">0</strong> 件
+        </span>
+
+        <button
+          id="btn-submit"
+          class="btn-primary"
+          onclick="submitBatchChanges()"
+          disabled
+        >
+          変更を反映する
+        </button>
+
       </div>
 
+      <!-- タスク追加 -->
       <h3>タスク追加</h3>
+
       <div class="add-task-box">
-        <input type="text" id="new-task-title" placeholder="新しいタスクを入力...">
-        <button onclick="createTask()">追加</button>
+
+        <input
+          type="text"
+          id="new-task-title"
+          placeholder="新しいタスクを入力..."
+          onkeydown="if(event.key === 'Enter') createTask();"
+        >
+
+        <button onclick="createTask()">
+          追加
+        </button>
+
       </div>
 
+      <!-- タスク一覧 -->
       <h3>タスク一覧</h3>
 
       <div class="tabs">
-        <button id="tab-uncompleted" class="tab-btn active" onclick="switchStatusTab('未完了')">未完了</button>
-        <button id="tab-completed" class="tab-btn" onclick="switchStatusTab('完了')">完了</button>
-        <button id="tab-all" class="tab-btn" onclick="switchStatusTab('すべて')">すべて</button>
+
+        <button
+          id="tab-uncompleted"
+          class="tab-btn active"
+          onclick="switchStatusTab('未完了')"
+        >
+          未完了
+        </button>
+
+        <button
+          id="tab-completed"
+          class="tab-btn"
+          onclick="switchStatusTab('完了')"
+        >
+          完了
+        </button>
+
+        <button
+          id="tab-all"
+          class="tab-btn"
+          onclick="switchStatusTab('すべて')"
+        >
+          すべて
+        </button>
+
       </div>
 
+      <!-- 検索 -->
       <div style="margin-bottom: 12px; text-align: right;">
-        <button onclick="toggleAccordion('search-box')" class="btn-secondary" style="font-size: 0.75rem; padding: 4px 8px;">
+
+        <button
+          onclick="toggleAccordion('search-box')"
+          class="btn-secondary"
+          style="font-size: 0.75rem; padding: 4px 8px;"
+        >
           🔍 タスクを検索
         </button>
-      </div>
-      <div id="search-box" class="hidden" style="margin-bottom: 16px;">
-        <input type="text" id="task-search-input" placeholder="タスク名で検索..." oninput="renderTasks()">
+
       </div>
 
+      <div id="search-box" class="hidden" style="margin-bottom: 16px;">
+
+        <input
+          type="text"
+          id="task-search-input"
+          placeholder="タスク名で検索..."
+          oninput="renderTasks()"
+        >
+
+      </div>
+
+      <!-- 管理者ユーザーフィルター -->
       <div id="user-filter-box" class="filter-bar hidden">
-        <label for="user-select" style="margin: 0; white-space: nowrap;">表示ユーザー:</label>
+
+        <label
+          for="user-select"
+          style="margin: 0; white-space: nowrap;"
+        >
+          表示ユーザー:
+        </label>
+
         <select id="user-select" onchange="renderTasks()">
           <option value="ALL">すべてのユーザー</option>
         </select>
+
       </div>
 
-      <div id="task-list">読み込み中...</div>
+      <div id="task-list">
+        <div class="empty-state">読み込み中...</div>
+      </div>
 
-      <!-- ユーザー設定変更エリア -->
+      <!-- アカウント設定 -->
       <div class="section-box">
-        <button onclick="toggleAccordion('profile-setting-box')" class="btn-secondary accordion-toggle">
+
+        <button
+          onclick="toggleAccordion('profile-setting-box')"
+          class="btn-secondary accordion-toggle"
+        >
           <span>⚙️ アカウント設定・AI調整</span>
           <span style="font-size: 0.75rem;">▽</span>
         </button>
-        <div id="profile-setting-box" class="hidden"
-          style="margin-top: 16px; padding: 16px; background: #f8fafc; border-radius: var(--radius); border: 1px solid var(--border-color);">
+
+        <div
+          id="profile-setting-box"
+          class="hidden"
+          style="
+            margin-top: 16px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+          "
+        >
+
           <div class="form-group">
-            <label>新しいユーザー名</label>
-            <input type="text" id="edit-username">
+
+            <label for="edit-username">
+              新しいユーザー名
+            </label>
+
+            <input
+              type="text"
+              id="edit-username"
+              autocomplete="username"
+            >
+
           </div>
+
           <div class="form-group">
-            <label>新しいパスワード</label>
-            <input type="password" id="edit-password" placeholder="新しいパスワードを入力">
+
+            <label for="edit-password">
+              新しいパスワード
+            </label>
+
+            <input
+              type="password"
+              id="edit-password"
+              placeholder="変更する場合のみ入力"
+              autocomplete="new-password"
+            >
+
+            <div style="
+              margin-top: 5px;
+              color: var(--text-muted);
+              font-size: 0.7rem;
+            ">
+              ※空欄の場合、現在のパスワードを維持します。
+            </div>
+
           </div>
+
           <div class="form-group">
-            <label>AIのカスタムプロンプト（指示文）</label>
-            <textarea id="edit-prompt" rows="3" placeholder="AIへの指示を入力..."></textarea>
+
+            <label for="edit-prompt">
+              AIのカスタムプロンプト（指示文）
+            </label>
+
+            <textarea
+              id="edit-prompt"
+              rows="4"
+              placeholder="例：あなたは優しく励ましてくれるアシスタントです。"
+            ></textarea>
+
           </div>
+
           <div class="form-group">
-            <label>アイコン画像URL</label>
-            <input type="text" id="edit-avatar-url" placeholder="https://example.com/image.png">
+
+            <label for="edit-avatar-url">
+              アイコン画像URL
+            </label>
+
+            <input
+              type="url"
+              id="edit-avatar-url"
+              placeholder="https://example.com/image.png"
+            >
+
           </div>
-          <button onclick="updateProfile()" class="btn-secondary" style="width: 100%;">設定を保存する</button>
+
+          <button
+            onclick="updateProfile()"
+            class="btn-secondary"
+            style="width: 100%;"
+          >
+            設定を保存する
+          </button>
+
         </div>
+
       </div>
 
-      <!-- マスタユーザー専用エリア -->
+      <!-- 管理者 -->
       <div id="admin-section" class="section-box admin-box hidden">
-        <button onclick="toggleAccordion('admin-log-box')" class="btn-secondary accordion-toggle">
-          <span>📜 【マスタ機能】全体操作履歴</span>
-          <span style="font-size: 0.75rem;">▽</span>
+
+        <button
+          onclick="toggleAccordion('admin-log-box')"
+          class="btn-secondary accordion-toggle"
+        >
+          <span>
+            📜 【マスタ機能】全体操作履歴
+          </span>
+
+          <span style="font-size: 0.75rem;">
+            ▽
+          </span>
         </button>
-        <div id="admin-log-box" class="hidden" style="margin-top: 16px;">
-          <button onclick="loadLogs()" class="btn-secondary" style="margin-bottom: 12px; width: 100%;">履歴ログを最新に更新</button>
-          <div id="log-list">ボタンを押すと履歴を取得します</div>
+
+        <div
+          id="admin-log-box"
+          class="hidden"
+          style="margin-top: 16px;"
+        >
+
+          <button
+            onclick="loadLogs()"
+            class="btn-secondary"
+            style="margin-bottom: 12px; width: 100%;"
+          >
+            履歴ログを最新に更新
+          </button>
+
+          <div id="log-list">
+            ボタンを押すと履歴を取得します
+          </div>
+
         </div>
+
       </div>
+
     </div>
 
   </div>
 
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwrujO1lvSsyCSYRpcbLxoLHhkziiVouQo4LQvK23QejUfYGCLEUuJNfxUJurGSTQuy/exec";
+
+    /*
+     * ============================================================
+     * GAS WebアプリURL
+     * ============================================================
+     */
+    const GAS_URL =
+      "https://script.google.com/macros/s/AKfycbwrujO1lvSsyCSYRpcbLxoLHhkziiVouQo4LQvK23QejUfYGCLEUuJNfxUJurGSTQuy/exec";
+
+
+    /*
+     * ============================================================
+     * グローバル状態
+     * ============================================================
+     */
+
     let currentUser = null;
+
+    let authToken = null;
+
     let allTasksCache = [];
+
     let currentStatusTab = "未完了";
+
     let pendingChanges = [];
 
-    window.onload = () => {
-      const savedUser = sessionStorage.getItem("user");
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        showApp();
+
+    /*
+     * ============================================================
+     * 起動
+     * ============================================================
+     */
+
+    window.onload = async () => {
+
+      const savedUser =
+        sessionStorage.getItem("user");
+
+      const savedToken =
+        sessionStorage.getItem("token");
+
+      if (savedUser && savedToken) {
+
+        try {
+
+          currentUser =
+            JSON.parse(savedUser);
+
+          authToken =
+            savedToken;
+
+          const result =
+            await apiRequest({
+              action: "verifySession"
+            });
+
+          if (result.status === "success") {
+
+            currentUser =
+              result.user;
+
+            sessionStorage.setItem(
+              "user",
+              JSON.stringify(currentUser)
+            );
+
+            showApp();
+
+          } else {
+
+            clearSession();
+
+          }
+
+        } catch (err) {
+
+          console.error(err);
+
+          clearSession();
+
+        }
+
       }
+
     };
 
+
+    /*
+     * ============================================================
+     * API共通処理
+     * ============================================================
+     */
+
+    async function apiRequest(payload) {
+
+      const body = {
+        ...payload
+      };
+
+      if (authToken) {
+        body.token = authToken;
+      }
+
+      const response =
+        await fetch(GAS_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify(body)
+        });
+
+      if (!response.ok) {
+        throw new Error(
+          "HTTPエラー: " + response.status
+        );
+      }
+
+      const data =
+        await response.json();
+
+      return data;
+    }
+
+
+    /*
+     * ============================================================
+     * ログイン
+     * ============================================================
+     */
+
     async function login() {
-      const usernameInput = document.getElementById("username").value;
-      const passwordInput = document.getElementById("password").value;
-      showMessage("通信中...", "#475569");
+
+      const usernameInput =
+        document.getElementById("username").value.trim();
+
+      const passwordInput =
+        document.getElementById("password").value;
+
+      if (!usernameInput || !passwordInput) {
+
+        showMessage(
+          "ユーザー名とパスワードを入力してください",
+          "#e11d48"
+        );
+
+        return;
+      }
+
+      const loginButton =
+        document.getElementById("login-button");
+
+      loginButton.disabled = true;
+
+      showMessage(
+        "通信中...",
+        "#475569"
+      );
 
       try {
-        const res = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "login", username: usernameInput, password: passwordInput })
-        });
-        const data = await res.json();
+
+        const data =
+          await apiRequest({
+            action: "login",
+            username: usernameInput,
+            password: passwordInput
+          });
 
         if (data.status === "success") {
-          currentUser = data.user;
-          sessionStorage.setItem("user", JSON.stringify(data.user));
-          sessionStorage.setItem("token", data.token);
-          showMessage("", "");
+
+          currentUser =
+            data.user;
+
+          authToken =
+            data.token;
+
+          sessionStorage.setItem(
+            "user",
+            JSON.stringify(currentUser)
+          );
+
+          sessionStorage.setItem(
+            "token",
+            authToken
+          );
+
+          if (data.welcomeMessage) {
+
+            sessionStorage.setItem(
+              "welcomeMessage",
+              data.welcomeMessage
+            );
+
+          } else {
+
+            sessionStorage.removeItem(
+              "welcomeMessage"
+            );
+
+          }
+
+          showMessage(
+            "",
+            ""
+          );
+
           showApp();
+
         } else {
-          showMessage(data.message, "#e11d48");
+
+          showMessage(
+            data.message || "ログインに失敗しました",
+            "#e11d48"
+          );
+
         }
+
       } catch (err) {
-        showMessage("エラーが発生しました: " + err.message, "#e11d48");
+
+        console.error(err);
+
+        showMessage(
+          "通信エラーが発生しました: " + err.message,
+          "#e11d48"
+        );
+
+      } finally {
+
+        loginButton.disabled = false;
+
       }
+
     }
+
+
+    /*
+     * ============================================================
+     * ログアウト
+     * ============================================================
+     */
 
     function logout() {
-      sessionStorage.clear();
-      currentUser = null;
-      document.getElementById("app-section").classList.add("hidden");
-      document.getElementById("admin-section").classList.add("hidden");
-      document.getElementById("user-filter-box").classList.add("hidden");
-      document.getElementById("login-section").classList.remove("hidden");
-      showMessage("ログアウトしました", "#059669");
+
+      clearSession();
+
+      document
+        .getElementById("app-section")
+        .classList.add("hidden");
+
+      document
+        .getElementById("admin-section")
+        .classList.add("hidden");
+
+      document
+        .getElementById("user-filter-box")
+        .classList.add("hidden");
+
+      document
+        .getElementById("login-section")
+        .classList.remove("hidden");
+
+      document
+        .getElementById("password")
+        .value = "";
+
+      showMessage(
+        "ログアウトしました",
+        "#059669"
+      );
+
     }
 
+
+    function clearSession() {
+
+      sessionStorage.removeItem("user");
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("welcomeMessage");
+
+      currentUser = null;
+      authToken = null;
+
+      allTasksCache = [];
+      pendingChanges = [];
+
+      updatePendingUI();
+
+    }
+
+
+    /*
+     * ============================================================
+     * アプリ表示
+     * ============================================================
+     */
+
     function showApp() {
-      document.getElementById("login-section").classList.add("hidden");
-      document.getElementById("app-section").classList.remove("hidden");
-      document.getElementById("user-info").innerText = `${currentUser.username} さん`;
 
-      // フォーム初期値の設定
-      document.getElementById("edit-username").value = currentUser.username || "";
-      document.getElementById("edit-prompt").value = currentUser.prompt || "";
-      document.getElementById("edit-avatar-url").value = currentUser.avatarUrl || "";
+      document
+        .getElementById("login-section")
+        .classList.add("hidden");
 
-      // アイコン画像とあいさつの反映
-// アイコン画像とあいさつの反映
-  if (currentUser.avatarUrl) {
-    document.getElementById("ai-avatar-img").src = currentUser.avatarUrl;
-  }
+      document
+        .getElementById("app-section")
+        .classList.remove("hidden");
 
-  // ★ログイン時メッセージがあれば表示、なければデフォルト表示
-  const savedWelcomeMessage = sessionStorage.getItem("welcomeMessage");
-  if (savedWelcomeMessage) {
-    document.getElementById("ai-bubble-text").innerText = savedWelcomeMessage;
-  } else {
-    document.getElementById("ai-bubble-text").innerText = `${currentUser.username} さん、おかえりなさい！今日もよろしくお願いいたします！`;
-  }
-
-      const adminSection = document.getElementById("admin-section");
-      const userFilterBox = document.getElementById("user-filter-box");
+      document
+        .getElementById("user-info")
+        .innerText =
+        `${currentUser.username} さん`;
 
       if (currentUser.role === "admin") {
-        adminSection.classList.remove("hidden");
-        userFilterBox.classList.remove("hidden");
-        loadLogs();
+
+        document
+          .getElementById("user-info")
+          .innerHTML =
+          `${escapeHtml(currentUser.username)} さん` +
+          `<span class="admin-badge">ADMIN</span>`;
+
+      }
+
+
+      /*
+       * プロフィール初期値
+       */
+
+      document
+        .getElementById("edit-username")
+        .value =
+        currentUser.username || "";
+
+      document
+        .getElementById("edit-password")
+        .value = "";
+
+      document
+        .getElementById("edit-prompt")
+        .value =
+        currentUser.prompt || "";
+
+      document
+        .getElementById("edit-avatar-url")
+        .value =
+        currentUser.avatarUrl || "";
+
+
+      /*
+       * アイコン
+       */
+
+      const avatar =
+        document.getElementById("ai-avatar-img");
+
+      if (currentUser.avatarUrl) {
+
+        avatar.src =
+          currentUser.avatarUrl;
+
       } else {
-        adminSection.classList.add("hidden");
-        userFilterBox.classList.add("hidden");
+
+        avatar.src =
+          createDefaultAvatar();
+
+      }
+
+
+      /*
+       * AI挨拶
+       */
+
+      const savedWelcomeMessage =
+        sessionStorage.getItem(
+          "welcomeMessage"
+        );
+
+      if (savedWelcomeMessage) {
+
+        document
+          .getElementById("ai-bubble-text")
+          .innerText =
+          savedWelcomeMessage;
+
+      } else {
+
+        document
+          .getElementById("ai-bubble-text")
+          .innerText =
+          `${currentUser.username} さん、おかえりなさい！今日もよろしくお願いいたします！`;
+
+      }
+
+
+      /*
+       * 管理者表示
+       */
+
+      const adminSection =
+        document.getElementById(
+          "admin-section"
+        );
+
+      const userFilterBox =
+        document.getElementById(
+          "user-filter-box"
+        );
+
+      if (currentUser.role === "admin") {
+
+        adminSection
+          .classList.remove("hidden");
+
+        userFilterBox
+          .classList.remove("hidden");
+
+      } else {
+
+        adminSection
+          .classList.add("hidden");
+
+        userFilterBox
+          .classList.add("hidden");
+
       }
 
       loadTasks();
+
     }
+
+
+    /*
+     * ============================================================
+     * タスク取得
+     * ============================================================
+     */
 
     async function loadTasks() {
-      const taskListDiv = document.getElementById("task-list");
-      taskListDiv.innerHTML = '<div class="empty-state">読み込み中...</div>';
+
+      const taskListDiv =
+        document.getElementById("task-list");
+
+      taskListDiv.innerHTML =
+        '<div class="empty-state">読み込み中...</div>';
 
       try {
-        const res = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "getTasks", userId: currentUser.id, role: currentUser.role })
-        });
-        const data = await res.json();
 
-        if (data.status === "success") {
-          allTasksCache = data.tasks;
+        const data =
+          await apiRequest({
+            action: "getTasks"
+          });
 
-          if (currentUser.role === "admin") {
-            setupUserFilterOptions();
-          } else {
-            document.getElementById("user-select").innerHTML = '<option value="ALL">すべてのユーザー</option>';
-          }
+        if (data.status !== "success") {
 
-          renderTasks();
-        }
-      } catch (err) {
-        taskListDiv.innerHTML = '<div class="empty-state" style="color: #e11d48;">タスクの取得に失敗しました</div>';
-      }
-    }
-
-    function setupUserFilterOptions() {
-      const select = document.getElementById("user-select");
-      const currentSelected = select.value || "ALL";
-      select.innerHTML = '<option value="ALL">すべてのユーザー</option>';
-
-      const userMap = new Map();
-      allTasksCache.forEach(t => {
-        if (t.userId && !userMap.has(t.userId)) {
-          userMap.set(t.userId, t.username || t.userId);
-        }
-      });
-
-      userMap.forEach((name, uid) => {
-        const opt = document.createElement("option");
-        opt.value = uid;
-        opt.innerText = name;
-        select.appendChild(opt);
-      });
-
-      select.value = currentSelected;
-    }
-
-    function switchStatusTab(status) {
-      currentStatusTab = status;
-      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-      if (status === '未完了') document.getElementById("tab-uncompleted").classList.add("active");
-      if (status === '完了') document.getElementById("tab-completed").classList.add("active");
-      if (status === 'すべて') document.getElementById("tab-all").classList.add("active");
-      renderTasks();
-    }
-
-    function renderTasks() {
-      const taskListDiv = document.getElementById("task-list");
-      const searchQuery = document.getElementById("task-search-input")?.value.trim().toLowerCase() || "";
-
-      let filtered = allTasksCache;
-
-      if (currentStatusTab !== "すべて") {
-        filtered = filtered.filter(t => t.status === currentStatusTab);
-      }
-
-      if (currentUser.role === "admin") {
-        const selectedUser = document.getElementById("user-select").value;
-        if (selectedUser !== "ALL") {
-          filtered = filtered.filter(t => t.userId === selectedUser);
-        }
-      }
-
-      if (searchQuery) {
-        filtered = filtered.filter(t => t.title && t.title.toLowerCase().includes(searchQuery));
-      }
-
-      if (filtered.length === 0) {
-        taskListDiv.innerHTML = '<div class="empty-state">該当するタスクはありません</div>';
-        return;
-      }
-
-      taskListDiv.innerHTML = "";
-      filtered.forEach(task => {
-        const item = document.createElement("div");
-        item.className = `task-item ${task.status === '完了' ? 'completed' : ''}`;
-
-        const ownerText = currentUser.role === "admin" ? `<small style="color:var(--text-muted);">(${escapeHtml(task.username || task.userId)})</small> ` : "";
-        const isCompleted = task.status === '完了';
-
-        item.innerHTML = `
-          <span>${ownerText}${escapeHtml(task.title)}</span>
-          <button class="${isCompleted ? 'btn-secondary' : ''}" onclick="toggleTaskStatusLocal('${task.id}', '${task.status}')">
-            ${isCompleted ? '未完了に戻す' : '完了にする'}
-          </button>
-        `;
-        taskListDiv.appendChild(item);
-      });
-    }
-
-    function toggleTaskStatusLocal(taskId, currentStatus) {
-      const newStatus = currentStatus === "完了" ? "未完了" : "完了";
-
-      const task = allTasksCache.find(t => t.id === taskId);
-      if (task) task.status = newStatus;
-
-      const existingIndex = pendingChanges.findIndex(c => c.taskId === taskId);
-      if (existingIndex >= 0) {
-        pendingChanges[existingIndex].newStatus = newStatus;
-      } else {
-        pendingChanges.push({ taskId: taskId, taskTitle: task.title, newStatus: newStatus });
-      }
-
-      updatePendingUI();
-      renderTasks();
-    }
-
-    function updatePendingUI() {
-      const countEl = document.getElementById("pending-count");
-      const btnEl = document.getElementById("btn-submit");
-      if (countEl) countEl.innerText = pendingChanges.length;
-      if (btnEl) btnEl.disabled = pendingChanges.length === 0;
-    }
-
-    async function submitBatchChanges() {
-      if (pendingChanges.length === 0) return;
-
-      showMessage("変更を反映中...", "#475569");
-      try {
-        const res = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            action: "applyBatchChanges",
-            userId: currentUser.id,
-            userEmail: currentUser.email,
-            userPrompt: currentUser.prompt,
-            changes: pendingChanges
-          })
-        });
-
-        const data = await res.json();
-        if (data.status === "success") {
-          pendingChanges = [];
-          updatePendingUI();
-          showMessage("反映とメール送信が完了しました！", "#16a34a");
-
-          // AIからの戻り値を吹き出しに表示！
-          if (data.aiFeedback) {
-            document.getElementById("ai-bubble-text").innerText = data.aiFeedback;
-          }
-
-          loadTasks();
-          if (currentUser.role === "admin") loadLogs();
-        } else {
-          showMessage("エラー: " + data.message, "#e11d48");
-        }
-      } catch (err) {
-        showMessage("反映に失敗しました", "#e11d48");
-      }
-    }
-
-    async function createTask() {
-      const input = document.getElementById("new-task-title");
-      const title = input.value.trim();
-      if (!title) return;
-
-      showMessage("タスクを追加中...", "#475569");
-      try {
-        const res = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "createTask", userId: currentUser.id, title: title })
-        });
-        const data = await res.json();
-        if (data.status === "success") {
-          input.value = "";
-          showMessage("タスクを追加しました！", "#059669");
-          loadTasks();
-          if (currentUser.role === "admin") loadLogs();
-        }
-      } catch (err) {
-        showMessage("追加に失敗しました", "#e11d48");
-      }
-    }
-
-    async function updateProfile() {
-      const newUsername = document.getElementById("edit-username").value.trim();
-      const newPassword = document.getElementById("edit-password").value.trim();
-      const newPrompt = document.getElementById("edit-prompt").value.trim();
-      const newAvatarUrl = document.getElementById("edit-avatar-url").value.trim();
-
-      if (!newUsername || !newPassword) {
-        showMessage("ユーザー名とパスワードを入力してください", "#e11d48");
-        return;
-      }
-
-      showMessage("更新中...", "#475569");
-      try {
-        const res = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            action: "updateUserProfile",
-            userId: currentUser.id,
-            newUsername: newUsername,
-            newPassword: newPassword,
-            newPrompt: newPrompt,
-            newAvatarUrl: newAvatarUrl
-          })
-        });
-        const data = await res.json();
-
-        if (data.status === "success") {
-          currentUser.username = data.updatedUsername;
-          currentUser.prompt = data.updatedPrompt;
-          currentUser.avatarUrl = data.updatedAvatarUrl;
-
-          sessionStorage.setItem("user", JSON.stringify(currentUser));
-          document.getElementById("user-info").innerText = `${currentUser.username} さん`;
-          document.getElementById("edit-password").value = "";
-
-          if (currentUser.avatarUrl) {
-            document.getElementById("ai-avatar-img").src = currentUser.avatarUrl;
-          }
-
-          showMessage("アカウント情報を更新しました！", "#059669");
-          if (currentUser.role === "admin") loadLogs();
-        } else {
-          showMessage(data.message, "#e11d48");
-        }
-      } catch (err) {
-        showMessage("更新に失敗しました", "#e11d48");
-      }
-    }
-
-    async function loadLogs() {
-      const logListDiv = document.getElementById("log-list");
-      logListDiv.innerHTML = '<div class="empty-state">履歴を取得中...</div>';
-
-      try {
-        const res = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "getLogs", role: currentUser.role })
-        });
-        const data = await res.json();
-
-        if (data.status === "success") {
-          if (data.logs.length === 0) {
-            logListDiv.innerHTML = '<div class="empty-state">履歴はありません</div>';
+          if (data.authExpired) {
+            handleAuthExpired();
             return;
           }
-          logListDiv.innerHTML = "";
-          data.logs.forEach(log => {
-            const item = document.createElement("div");
-            item.className = "log-item";
-            const formattedTime = formatTimestamp(log.timestamp);
-            const displayUser = log.username || log.userId;
-            item.innerHTML = `<strong>[${formattedTime}]</strong> <span style="color: var(--text-muted);">(ユーザー: ${escapeHtml(displayUser)})</span> ${escapeHtml(log.action)}`;
-            logListDiv.appendChild(item);
-          });
-        } else {
-          logListDiv.innerHTML = `<div class="empty-state" style="color: #e11d48;">${data.message}</div>`;
+
+          taskListDiv.innerHTML =
+            `<div class="empty-state" style="color:#e11d48;">
+              ${escapeHtml(data.message || "取得に失敗しました")}
+            </div>`;
+
+          return;
         }
+
+        allTasksCache =
+          Array.isArray(data.tasks)
+            ? data.tasks
+            : [];
+
+        if (currentUser.role === "admin") {
+
+          setupUserFilterOptions();
+
+        } else {
+
+          document
+            .getElementById("user-select")
+            .innerHTML =
+            '<option value="ALL">すべてのユーザー</option>';
+
+        }
+
+        renderTasks();
+
       } catch (err) {
-        logListDiv.innerHTML = '<div class="empty-state" style="color: #e11d48;">履歴の取得に失敗しました</div>';
+
+        console.error(err);
+
+        taskListDiv.innerHTML =
+          '<div class="empty-state" style="color:#e11d48;">タスクの取得に失敗しました</div>';
+
       }
+
     }
+
+
+    /*
+     * ============================================================
+     * ユーザーフィルター
+     * ============================================================
+     */
+
+    function setupUserFilterOptions() {
+
+      const select =
+        document.getElementById(
+          "user-select"
+        );
+
+      const currentSelected =
+        select.value || "ALL";
+
+      select.innerHTML =
+        '<option value="ALL">すべてのユーザー</option>';
+
+      const userMap =
+        new Map();
+
+      allTasksCache.forEach(task => {
+
+        if (
+          task.userId &&
+          !userMap.has(task.userId)
+        ) {
+
+          userMap.set(
+            task.userId,
+            task.username || task.userId
+          );
+
+        }
+
+      });
+
+      userMap.forEach(
+        (name, uid) => {
+
+          const option =
+            document.createElement(
+              "option"
+            );
+
+          option.value = uid;
+          option.innerText = name;
+
+          select.appendChild(option);
+
+        }
+      );
+
+      if (
+        Array.from(select.options)
+          .some(option =>
+            option.value === currentSelected
+          )
+      ) {
+
+        select.value =
+          currentSelected;
+
+      } else {
+
+        select.value = "ALL";
+
+      }
+
+    }
+
+
+    /*
+     * ============================================================
+     * タブ
+     * ============================================================
+     */
+
+    function switchStatusTab(status) {
+
+      currentStatusTab =
+        status;
+
+      document
+        .querySelectorAll(".tab-btn")
+        .forEach(btn =>
+          btn.classList.remove("active")
+        );
+
+      if (status === "未完了") {
+
+        document
+          .getElementById("tab-uncompleted")
+          .classList.add("active");
+
+      }
+
+      if (status === "完了") {
+
+        document
+          .getElementById("tab-completed")
+          .classList.add("active");
+
+      }
+
+      if (status === "すべて") {
+
+        document
+          .getElementById("tab-all")
+          .classList.add("active");
+
+      }
+
+      renderTasks();
+
+    }
+
+
+    /*
+     * ============================================================
+     * タスク描画
+     * ============================================================
+     */
+
+    function renderTasks() {
+
+      const taskListDiv =
+        document.getElementById(
+          "task-list"
+        );
+
+      const searchQuery =
+        document
+          .getElementById(
+            "task-search-input"
+          )
+          ?.value
+          .trim()
+          .toLowerCase() || "";
+
+      let filtered =
+        [...allTasksCache];
+
+
+      /*
+       * ステータス
+       */
+
+      if (currentStatusTab !== "すべて") {
+
+        filtered =
+          filtered.filter(
+            task =>
+              task.status === currentStatusTab
+          );
+
+      }
+
+
+      /*
+       * 管理者ユーザーフィルター
+       */
+
+      if (currentUser.role === "admin") {
+
+        const selectedUser =
+          document
+            .getElementById(
+              "user-select"
+            )
+            .value;
+
+        if (selectedUser !== "ALL") {
+
+          filtered =
+            filtered.filter(
+              task =>
+                String(task.userId) ===
+                String(selectedUser)
+            );
+
+        }
+
+      }
+
+
+      /*
+       * 検索
+       */
+
+      if (searchQuery) {
+
+        filtered =
+          filtered.filter(task =>
+            String(task.title || "")
+              .toLowerCase()
+              .includes(searchQuery)
+          );
+
+      }
+
+
+      /*
+       * 空
+       */
+
+      if (filtered.length === 0) {
+
+        taskListDiv.innerHTML =
+          '<div class="empty-state">該当するタスクはありません</div>';
+
+        return;
+
+      }
+
+
+      /*
+       * 描画
+       */
+
+      taskListDiv.innerHTML = "";
+
+      filtered.forEach(task => {
+
+        const item =
+          document.createElement("div");
+
+        item.className =
+          `task-item ${
+            task.status === "完了"
+              ? "completed"
+              : ""
+          }`;
+
+
+        const isCompleted =
+          task.status === "完了";
+
+
+        const ownerHtml =
+          currentUser.role === "admin"
+            ? `<small class="task-owner">
+                (${escapeHtml(task.username || task.userId)})
+              </small>`
+            : "";
+
+
+        const titleSpan =
+          document.createElement("span");
+
+        titleSpan.className =
+          "task-title";
+
+        titleSpan.innerHTML =
+          `${ownerHtml}${escapeHtml(task.title)}`;
+
+
+        const button =
+          document.createElement("button");
+
+        if (isCompleted) {
+
+          button.className =
+            "btn-secondary";
+
+          button.innerText =
+            "未完了に戻す";
+
+        } else {
+
+          button.innerText =
+            "完了にする";
+
+        }
+
+        button.onclick = () => {
+
+          toggleTaskStatusLocal(
+            task.id,
+            task.status
+          );
+
+        };
+
+
+        item.appendChild(titleSpan);
+        item.appendChild(button);
+
+        taskListDiv.appendChild(item);
+
+      });
+
+    }
+
+
+    /*
+     * ============================================================
+     * タスク状態変更
+     * ============================================================
+     */
+
+    function toggleTaskStatusLocal(
+      taskId,
+      currentStatus
+    ) {
+
+      const newStatus =
+        currentStatus === "完了"
+          ? "未完了"
+          : "完了";
+
+      const task =
+        allTasksCache.find(
+          item =>
+            String(item.id) ===
+            String(taskId)
+        );
+
+      if (!task) {
+        return;
+      }
+
+
+      task.status =
+        newStatus;
+
+
+      const existingIndex =
+        pendingChanges.findIndex(
+          change =>
+            String(change.taskId) ===
+            String(taskId)
+        );
+
+
+      if (existingIndex >= 0) {
+
+        pendingChanges[
+          existingIndex
+        ].newStatus =
+          newStatus;
+
+      } else {
+
+        pendingChanges.push({
+          taskId: taskId,
+          taskTitle: task.title,
+          newStatus: newStatus
+        });
+
+      }
+
+
+      updatePendingUI();
+
+      renderTasks();
+
+    }
+
+
+    /*
+     * ============================================================
+     * 未反映件数
+     * ============================================================
+     */
+
+    function updatePendingUI() {
+
+      const countEl =
+        document.getElementById(
+          "pending-count"
+        );
+
+      const buttonEl =
+        document.getElementById(
+          "btn-submit"
+        );
+
+      if (countEl) {
+
+        countEl.innerText =
+          pendingChanges.length;
+
+      }
+
+      if (buttonEl) {
+
+        buttonEl.disabled =
+          pendingChanges.length === 0;
+
+      }
+
+    }
+
+
+    /*
+     * ============================================================
+     * 一括反映
+     * ============================================================
+     */
+
+    async function submitBatchChanges() {
+
+      if (pendingChanges.length === 0) {
+        return;
+      }
+
+      const changes =
+        pendingChanges.map(change => ({
+          taskId: change.taskId,
+          taskTitle: change.taskTitle,
+          newStatus: change.newStatus
+        }));
+
+
+      showMessage(
+        "変更を反映中...",
+        "#475569"
+      );
+
+
+      const button =
+        document.getElementById(
+          "btn-submit"
+        );
+
+      button.disabled = true;
+
+
+      try {
+
+        const data =
+          await apiRequest({
+            action: "applyBatchChanges",
+            changes: changes
+          });
+
+
+        if (data.status === "success") {
+
+          pendingChanges = [];
+
+          updatePendingUI();
+
+          showMessage(
+            data.emailSent
+              ? "反映とメール送信が完了しました！"
+              : "変更を反映しました！",
+            "#16a34a"
+          );
+
+
+          if (data.aiFeedback) {
+
+            document
+              .getElementById(
+                "ai-bubble-text"
+              )
+              .innerText =
+              data.aiFeedback;
+
+          }
+
+
+          await loadTasks();
+
+
+          if (currentUser.role === "admin") {
+            await loadLogs();
+          }
+
+        } else {
+
+          showMessage(
+            "エラー: " +
+            (data.message || "変更に失敗しました"),
+            "#e11d48"
+          );
+
+          renderTasks();
+
+        }
+
+      } catch (err) {
+
+        console.error(err);
+
+        showMessage(
+          "反映に失敗しました: " +
+          err.message,
+          "#e11d48"
+        );
+
+        renderTasks();
+
+      } finally {
+
+        updatePendingUI();
+
+      }
+
+    }
+
+
+    /*
+     * ============================================================
+     * タスク作成
+     * ============================================================
+     */
+
+    async function createTask() {
+
+      const input =
+        document.getElementById(
+          "new-task-title"
+        );
+
+      const title =
+        input.value.trim();
+
+      if (!title) {
+
+        showMessage(
+          "タスク名を入力してください",
+          "#e11d48"
+        );
+
+        input.focus();
+
+        return;
+
+      }
+
+
+      showMessage(
+        "タスクを追加中...",
+        "#475569"
+      );
+
+
+      try {
+
+        const data =
+          await apiRequest({
+            action: "createTask",
+            title: title
+          });
+
+
+        if (data.status === "success") {
+
+          input.value = "";
+
+          showMessage(
+            "タスクを追加しました！",
+            "#059669"
+          );
+
+          await loadTasks();
+
+          if (currentUser.role === "admin") {
+            await loadLogs();
+          }
+
+        } else {
+
+          showMessage(
+            data.message ||
+            "追加に失敗しました",
+            "#e11d48"
+          );
+
+        }
+
+      } catch (err) {
+
+        console.error(err);
+
+        showMessage(
+          "追加に失敗しました: " +
+          err.message,
+          "#e11d48"
+        );
+
+      }
+
+    }
+
+
+    /*
+     * ============================================================
+     * プロフィール更新
+     * ============================================================
+     */
+
+    async function updateProfile() {
+
+      const newUsername =
+        document
+          .getElementById(
+            "edit-username"
+          )
+          .value
+          .trim();
+
+      const newPassword =
+        document
+          .getElementById(
+            "edit-password"
+          )
+          .value
+          .trim();
+
+      const newPrompt =
+        document
+          .getElementById(
+            "edit-prompt"
+          )
+          .value
+          .trim();
+
+      const newAvatarUrl =
+        document
+          .getElementById(
+            "edit-avatar-url"
+          )
+          .value
+          .trim();
+
+
+      if (!newUsername) {
+
+        showMessage(
+          "ユーザー名を入力してください",
+          "#e11d48"
+        );
+
+        return;
+
+      }
+
+
+      showMessage(
+        "更新中...",
+        "#475569"
+      );
+
+
+      try {
+
+        const payload = {
+          action: "updateUserProfile",
+          newUsername: newUsername,
+          newPrompt: newPrompt,
+          newAvatarUrl: newAvatarUrl
+        };
+
+
+        if (newPassword) {
+
+          payload.newPassword =
+            newPassword;
+
+        }
+
+
+        const data =
+          await apiRequest(payload);
+
+
+        if (data.status === "success") {
+
+          currentUser.username =
+            data.updatedUsername;
+
+          currentUser.prompt =
+            data.updatedPrompt;
+
+          currentUser.avatarUrl =
+            data.updatedAvatarUrl;
+
+
+          sessionStorage.setItem(
+            "user",
+            JSON.stringify(currentUser)
+          );
+
+
+          if (currentUser.role === "admin") {
+
+            document
+              .getElementById("user-info")
+              .innerHTML =
+              `${escapeHtml(currentUser.username)} さん` +
+              `<span class="admin-badge">ADMIN</span>`;
+
+          } else {
+
+            document
+              .getElementById("user-info")
+              .innerText =
+              `${currentUser.username} さん`;
+
+          }
+
+
+          document
+            .getElementById(
+              "edit-password"
+            )
+            .value = "";
+
+
+          const avatar =
+            document.getElementById(
+              "ai-avatar-img"
+            );
+
+
+          if (currentUser.avatarUrl) {
+
+            avatar.src =
+              currentUser.avatarUrl;
+
+          } else {
+
+            avatar.src =
+              createDefaultAvatar();
+
+          }
+
+
+          showMessage(
+            "アカウント情報を更新しました！",
+            "#059669"
+          );
+
+
+          if (currentUser.role === "admin") {
+            await loadLogs();
+          }
+
+        } else {
+
+          showMessage(
+            data.message ||
+            "更新に失敗しました",
+            "#e11d48"
+          );
+
+        }
+
+      } catch (err) {
+
+        console.error(err);
+
+        showMessage(
+          "更新に失敗しました: " +
+          err.message,
+          "#e11d48"
+        );
+
+      }
+
+    }
+
+
+    /*
+     * ============================================================
+     * ログ
+     * ============================================================
+     */
+
+    async function loadLogs() {
+
+      if (
+        !currentUser ||
+        currentUser.role !== "admin"
+      ) {
+        return;
+      }
+
+
+      const logListDiv =
+        document.getElementById(
+          "log-list"
+        );
+
+
+      logListDiv.innerHTML =
+        '<div class="empty-state">履歴を取得中...</div>';
+
+
+      try {
+
+        const data =
+          await apiRequest({
+            action: "getLogs"
+          });
+
+
+        if (data.status !== "success") {
+
+          logListDiv.innerHTML =
+            `<div class="empty-state" style="color:#e11d48;">
+              ${escapeHtml(data.message || "取得に失敗しました")}
+            </div>`;
+
+          return;
+
+        }
+
+
+        if (!data.logs || data.logs.length === 0) {
+
+          logListDiv.innerHTML =
+            '<div class="empty-state">履歴はありません</div>';
+
+          return;
+
+        }
+
+
+        logListDiv.innerHTML = "";
+
+
+        data.logs.forEach(log => {
+
+          const item =
+            document.createElement("div");
+
+          item.className =
+            "log-item";
+
+
+          const formattedTime =
+            formatTimestamp(
+              log.timestamp
+            );
+
+
+          const displayUser =
+            log.username ||
+            log.userId;
+
+
+          item.innerHTML =
+            `<strong>[${escapeHtml(formattedTime)}]</strong>
+             <span style="color:var(--text-muted);">
+               (ユーザー: ${escapeHtml(displayUser)})
+             </span>
+             ${escapeHtml(log.action)}`;
+
+
+          logListDiv.appendChild(item);
+
+        });
+
+
+      } catch (err) {
+
+        console.error(err);
+
+        logListDiv.innerHTML =
+          '<div class="empty-state" style="color:#e11d48;">履歴の取得に失敗しました</div>';
+
+      }
+
+    }
+
+
+    /*
+     * ============================================================
+     * 日付
+     * ============================================================
+     */
 
     function formatTimestamp(ts) {
-      if (!ts) return "";
-      const d = new Date(ts);
-      if (isNaN(d.getTime())) return ts;
-      const pad = n => String(n).padStart(2, '0');
+
+      if (!ts) {
+        return "";
+      }
+
+      const d =
+        new Date(ts);
+
+      if (isNaN(d.getTime())) {
+        return String(ts);
+      }
+
+      const pad =
+        n =>
+          String(n).padStart(2, "0");
+
+
       return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+
     }
 
-    function showMessage(msg, color) {
-      const messageDiv = document.getElementById("message-top");
-      messageDiv.style.color = color;
-      messageDiv.innerText = msg;
+
+    /*
+     * ============================================================
+     * メッセージ
+     * ============================================================
+     */
+
+    function showMessage(
+      msg,
+      color
+    ) {
+
+      const messageDiv =
+        document.getElementById(
+          "message-top"
+        );
+
+      messageDiv.style.color =
+        color || "";
+
+      messageDiv.innerText =
+        msg || "";
+
     }
 
-    function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+    /*
+     * ============================================================
+     * HTMLエスケープ
+     * ============================================================
+     */
+
+    function escapeHtml(value) {
+
+      if (
+        value === null ||
+        value === undefined
+      ) {
+        return "";
+      }
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
     }
 
-    function toggleAccordion(elementId) {
-      const target = document.getElementById(elementId);
-      target.classList.toggle("hidden");
+
+    /*
+     * ============================================================
+     * アコーディオン
+     * ============================================================
+     */
+
+    function toggleAccordion(
+      elementId
+    ) {
+
+      const target =
+        document.getElementById(
+          elementId
+        );
+
+      if (target) {
+        target.classList.toggle(
+          "hidden"
+        );
+      }
+
     }
+
+
+    /*
+     * ============================================================
+     * 認証切れ
+     * ============================================================
+     */
+
+    function handleAuthExpired() {
+
+      clearSession();
+
+      document
+        .getElementById("app-section")
+        .classList.add("hidden");
+
+      document
+        .getElementById("login-section")
+        .classList.remove("hidden");
+
+      showMessage(
+        "ログインの有効期限が切れました。もう一度ログインしてください。",
+        "#e11d48"
+      );
+
+    }
+
+
+    /*
+     * ============================================================
+     * デフォルトAIアイコン
+     * ============================================================
+     */
+
+    function createDefaultAvatar() {
+
+      return "data:image/svg+xml;utf8," +
+        "<svg xmlns='http://www.w3.org/2000/svg' " +
+        "width='100' height='100' viewBox='0 0 100 100'>" +
+        "<circle cx='50' cy='50' r='50' fill='%23cbd5e1'/>" +
+        "<text x='50%' y='55%' " +
+        "dominant-baseline='middle' " +
+        "text-anchor='middle' " +
+        "font-family='sans-serif' " +
+        "font-size='32' " +
+        "fill='%230f172a'>AI</text>" +
+        "</svg>";
+
+    }
+
   </script>
+
 </body>
 
 </html>
