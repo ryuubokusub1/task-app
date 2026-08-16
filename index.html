@@ -472,10 +472,18 @@
       document.getElementById("edit-avatar-url").value = currentUser.avatarUrl || "";
 
       // アイコン画像とあいさつの反映
-      if (currentUser.avatarUrl) {
-        document.getElementById("ai-avatar-img").src = currentUser.avatarUrl;
-      }
-      document.getElementById("ai-bubble-text").innerText = `${currentUser.username} さん、おかえりなさい！今日もよろしくお願いいたします！`;
+// アイコン画像とあいさつの反映
+  if (currentUser.avatarUrl) {
+    document.getElementById("ai-avatar-img").src = currentUser.avatarUrl;
+  }
+
+  // ★ログイン時メッセージがあれば表示、なければデフォルト表示
+  const savedWelcomeMessage = sessionStorage.getItem("welcomeMessage");
+  if (savedWelcomeMessage) {
+    document.getElementById("ai-bubble-text").innerText = savedWelcomeMessage;
+  } else {
+    document.getElementById("ai-bubble-text").innerText = `${currentUser.username} さん、おかえりなさい！今日もよろしくお願いいたします！`;
+  }
 
       const adminSection = document.getElementById("admin-section");
       const userFilterBox = document.getElementById("user-filter-box");
