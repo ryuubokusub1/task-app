@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>タスク管理アプリ</title>
-  <!-- 現代的なフォント Inter & Noto Sans JP の読み込み -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -15,12 +14,9 @@
   <style>
     :root {
       --primary: #0f172a;
-      /* モダンなダークスレート */
       --primary-hover: #1e293b;
       --accent: #6366f1;
-      /* アクセント用インディゴ */
       --bg-color: #fafafa;
-      /* ノイズのないクリーンな背景 */
       --card-bg: #ffffff;
       --text-main: #0f172a;
       --text-muted: #64748b;
@@ -31,11 +27,7 @@
       --transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
@@ -76,9 +68,7 @@
       margin-bottom: 12px;
     }
 
-    .form-group {
-      margin-bottom: 16px;
-    }
+    .form-group { margin-bottom: 16px; }
 
     label {
       display: block;
@@ -90,8 +80,7 @@
       letter-spacing: 0.05em;
     }
 
-    input,
-    select {
+    input, select, textarea {
       width: 100%;
       padding: 10px 14px;
       border: 1px solid var(--border-color);
@@ -101,10 +90,10 @@
       background: #ffffff;
       outline: none;
       transition: var(--transition);
+      font-family: inherit;
     }
 
-    input:focus,
-    select:focus {
+    input:focus, select:focus, textarea:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
     }
@@ -124,9 +113,7 @@
       justify-content: center;
     }
 
-    button:hover {
-      background-color: var(--primary-hover);
-    }
+    button:hover { background-color: var(--primary-hover); }
 
     .btn-secondary {
       background-color: #ffffff;
@@ -145,12 +132,68 @@
       border: 1px solid #fee2e2;
     }
 
-    .btn-danger:hover {
-      background-color: #fef2f2;
+    .btn-danger:hover { background-color: #fef2f2; }
+
+    .hidden { display: none !important; }
+
+    /* メッセージ上部表示 */
+    #message-top {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-align: center;
+      padding: 8px 12px;
+      margin-bottom: 16px;
+      border-radius: var(--radius);
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .hidden {
-      display: none !important;
+    /* AIアシスタント 吹き出し＋画像エリア */
+    .ai-assistant-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #f1f5f9;
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .ai-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #cbd5e1;
+      border: 2px solid #ffffff;
+      flex-shrink: 0;
+    }
+
+    .ai-speech-bubble {
+      position: relative;
+      background: #ffffff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-subtle);
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .ai-speech-bubble::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 14px;
+      width: 0;
+      height: 0;
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-right: 8px solid #ffffff;
     }
 
     /* ヘッダー */
@@ -158,8 +201,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 28px;
-      padding-bottom: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
       border-bottom: 1px solid var(--border-color);
     }
 
@@ -169,18 +212,9 @@
       color: var(--text-muted);
     }
 
-    /* タスク追加 */
-    .add-task-box {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 28px;
-    }
+    .add-task-box { display: flex; gap: 8px; margin-bottom: 28px; }
+    .add-task-box input { flex: 1; }
 
-    .add-task-box input {
-      flex: 1;
-    }
-
-    /* タブデザイン */
     .tabs {
       display: flex;
       background: #f1f5f9;
@@ -208,12 +242,7 @@
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
     }
 
-    /* タスクアイテム */
-    #task-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    #task-list { display: flex; flex-direction: column; gap: 6px; }
 
     .task-item {
       display: flex;
@@ -226,14 +255,8 @@
       transition: var(--transition);
     }
 
-    .task-item:hover {
-      border-color: var(--border-hover);
-    }
-
-    .task-item.completed span {
-      text-decoration: line-through;
-      color: #94a3b8;
-    }
+    .task-item:hover { border-color: var(--border-hover); }
+    .task-item.completed span { text-decoration: line-through; color: #94a3b8; }
 
     .empty-state {
       text-align: center;
@@ -242,7 +265,6 @@
       font-size: 0.875rem;
     }
 
-    /* セクション */
     .section-box {
       margin-top: 28px;
       padding-top: 20px;
@@ -257,7 +279,6 @@
       color: var(--text-muted);
     }
 
-    /* ユーザー絞り込みドロップダウンのレイアウト調整 */
     .filter-bar {
       margin-top: 12px;
       margin-bottom: 16px;
@@ -266,26 +287,19 @@
       gap: 8px;
     }
 
-    /* スタイル追加 */
-    .btn-primary {
-      background-color: var(--accent);
-      color: #ffffff;
-    }
+    .btn-primary { background-color: var(--accent); color: #ffffff; }
+    .btn-primary:hover:not(:disabled) { background-color: #4f46e5; }
 
-    .btn-primary:hover:not(:disabled) {
-      background-color: #4f46e5;
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
   </style>
 </head>
 
 <body>
 
   <div class="container">
+    <!-- 最上部メッセージ表示エリア -->
+    <div id="message-top"></div>
+
     <!-- ログイン画面 -->
     <div id="login-section">
       <h2>ログイン</h2>
@@ -305,14 +319,21 @@
       <div class="header">
         <span id="user-info">ようこそ！</span>
         <button onclick="logout()" class="btn-danger">ログアウト</button>
-      <div id="message"></div>
       </div>
+
+      <!-- AIアシスタント領域（画像＋ふきだし） -->
+      <div class="ai-assistant-card">
+        <img id="ai-avatar-img" class="ai-avatar" src="https://via.placeholder.com/100?text=AI" alt="AI Icon">
+        <div id="ai-bubble-text" class="ai-speech-bubble">おかえりなさい！今日もタスク管理を頑張りましょう！</div>
+      </div>
+
       <!-- 一括反映バー -->
       <div id="batch-bar"
         style="margin-bottom: 16px; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
         <span>未反映の変更: <strong id="pending-count">0</strong> 件</span>
         <button id="btn-submit" class="btn-primary" onclick="submitBatchChanges()" disabled>変更を反映する</button>
       </div>
+
       <h3>タスク追加</h3>
       <div class="add-task-box">
         <input type="text" id="new-task-title" placeholder="新しいタスクを入力...">
@@ -321,17 +342,14 @@
 
       <h3>タスク一覧</h3>
 
-      <!-- 状態切り替えタブ -->
       <div class="tabs">
         <button id="tab-uncompleted" class="tab-btn active" onclick="switchStatusTab('未完了')">未完了</button>
         <button id="tab-completed" class="tab-btn" onclick="switchStatusTab('完了')">完了</button>
         <button id="tab-all" class="tab-btn" onclick="switchStatusTab('すべて')">すべて</button>
       </div>
 
-      <!-- 検索窓（トグル展開式） -->
       <div style="margin-bottom: 12px; text-align: right;">
-        <button onclick="toggleAccordion('search-box')" class="btn-secondary"
-          style="font-size: 0.75rem; padding: 4px 8px;">
+        <button onclick="toggleAccordion('search-box')" class="btn-secondary" style="font-size: 0.75rem; padding: 4px 8px;">
           🔍 タスクを検索
         </button>
       </div>
@@ -339,7 +357,6 @@
         <input type="text" id="task-search-input" placeholder="タスク名で検索..." oninput="renderTasks()">
       </div>
 
-      <!-- マスタユーザー専用：ユーザー絞り込みドロップダウン -->
       <div id="user-filter-box" class="filter-bar hidden">
         <label for="user-select" style="margin: 0; white-space: nowrap;">表示ユーザー:</label>
         <select id="user-select" onchange="renderTasks()">
@@ -349,14 +366,14 @@
 
       <div id="task-list">読み込み中...</div>
 
-      <!-- ユーザー設定変更エリア（折りたたみ式） -->
+      <!-- ユーザー設定変更エリア -->
       <div class="section-box">
         <button onclick="toggleAccordion('profile-setting-box')" class="btn-secondary accordion-toggle">
-          <span>⚙️ アカウント設定の変更</span>
+          <span>⚙️ アカウント設定・AI調整</span>
           <span style="font-size: 0.75rem;">▽</span>
         </button>
         <div id="profile-setting-box" class="hidden"
-          style="margin-top: 16px; padding: 16px; background: #f8fafc; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          style="margin-top: 16px; padding: 16px; background: #f8fafc; border-radius: var(--radius); border: 1px solid var(--border-color);">
           <div class="form-group">
             <label>新しいユーザー名</label>
             <input type="text" id="edit-username">
@@ -365,11 +382,18 @@
             <label>新しいパスワード</label>
             <input type="password" id="edit-password" placeholder="新しいパスワードを入力">
           </div>
+          <div class="form-group">
+            <label>AIのカスタムプロンプト（指示文）</label>
+            <textarea id="edit-prompt" rows="3" placeholder="AIへの指示を入力..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>アイコン画像URL</label>
+            <input type="text" id="edit-avatar-url" placeholder="https://example.com/image.png">
+          </div>
           <button onclick="updateProfile()" class="btn-secondary" style="width: 100%;">設定を保存する</button>
         </div>
       </div>
 
-      <!-- マスタユーザー専用エリア -->
       <!-- マスタユーザー専用エリア -->
       <div id="admin-section" class="section-box admin-box hidden">
         <button onclick="toggleAccordion('admin-log-box')" class="btn-secondary accordion-toggle">
@@ -377,8 +401,7 @@
           <span style="font-size: 0.75rem;">▽</span>
         </button>
         <div id="admin-log-box" class="hidden" style="margin-top: 16px;">
-          <button onclick="loadLogs()" class="btn-secondary"
-            style="margin-bottom: 12px; width: 100%;">履歴ログを最新に更新</button>
+          <button onclick="loadLogs()" class="btn-secondary" style="margin-bottom: 12px; width: 100%;">履歴ログを最新に更新</button>
           <div id="log-list">ボタンを押すと履歴を取得します</div>
         </div>
       </div>
@@ -391,6 +414,7 @@
     let currentUser = null;
     let allTasksCache = [];
     let currentStatusTab = "未完了";
+    let pendingChanges = [];
 
     window.onload = () => {
       const savedUser = sessionStorage.getItem("user");
@@ -413,10 +437,8 @@
         });
         const data = await res.json();
 
-        // login() 関数内
         if (data.status === "success") {
           currentUser = data.user;
-          // バックエンドからのレスポンスに email が含まれていることを確認し保存
           sessionStorage.setItem("user", JSON.stringify(data.user));
           sessionStorage.setItem("token", data.token);
           showMessage("", "");
@@ -443,7 +465,17 @@
       document.getElementById("login-section").classList.add("hidden");
       document.getElementById("app-section").classList.remove("hidden");
       document.getElementById("user-info").innerText = `${currentUser.username} さん`;
-      document.getElementById("edit-username").value = currentUser.username;
+
+      // フォーム初期値の設定
+      document.getElementById("edit-username").value = currentUser.username || "";
+      document.getElementById("edit-prompt").value = currentUser.prompt || "";
+      document.getElementById("edit-avatar-url").value = currentUser.avatarUrl || "";
+
+      // アイコン画像とあいさつの反映
+      if (currentUser.avatarUrl) {
+        document.getElementById("ai-avatar-img").src = currentUser.avatarUrl;
+      }
+      document.getElementById("ai-bubble-text").innerText = `${currentUser.username} さん、おかえりなさい！今日もよろしくお願いいたします！`;
 
       const adminSection = document.getElementById("admin-section");
       const userFilterBox = document.getElementById("user-filter-box");
@@ -451,7 +483,7 @@
       if (currentUser.role === "admin") {
         adminSection.classList.remove("hidden");
         userFilterBox.classList.remove("hidden");
-        loadLogs(); // バックグラウンドでログを取得しておきます
+        loadLogs();
       } else {
         adminSection.classList.add("hidden");
         userFilterBox.classList.add("hidden");
@@ -493,7 +525,6 @@
       const currentSelected = select.value || "ALL";
       select.innerHTML = '<option value="ALL">すべてのユーザー</option>';
 
-      // 一重化されたユーザー情報のリストを取得（userId と username のペア）
       const userMap = new Map();
       allTasksCache.forEach(t => {
         if (t.userId && !userMap.has(t.userId)) {
@@ -503,8 +534,8 @@
 
       userMap.forEach((name, uid) => {
         const opt = document.createElement("option");
-        opt.value = uid; // 内部処理用の値は userId のまま
-        opt.innerText = name; // 表示ラベルを ユーザー名 に変更
+        opt.value = uid;
+        opt.innerText = name;
         select.appendChild(opt);
       });
 
@@ -554,15 +585,76 @@
         const ownerText = currentUser.role === "admin" ? `<small style="color:var(--text-muted);">(${escapeHtml(task.username || task.userId)})</small> ` : "";
         const isCompleted = task.status === '完了';
 
-        // ボタンのテキストと動作を正しく分離
         item.innerHTML = `
-      <span>${ownerText}${escapeHtml(task.title)}</span>
-      <button class="${isCompleted ? 'btn-secondary' : ''}" onclick="toggleTaskStatusLocal('${task.id}', '${task.status}')">
-        ${isCompleted ? '未完了に戻す' : '完了にする'}
-      </button>
-    `;
+          <span>${ownerText}${escapeHtml(task.title)}</span>
+          <button class="${isCompleted ? 'btn-secondary' : ''}" onclick="toggleTaskStatusLocal('${task.id}', '${task.status}')">
+            ${isCompleted ? '未完了に戻す' : '完了にする'}
+          </button>
+        `;
         taskListDiv.appendChild(item);
       });
+    }
+
+    function toggleTaskStatusLocal(taskId, currentStatus) {
+      const newStatus = currentStatus === "完了" ? "未完了" : "完了";
+
+      const task = allTasksCache.find(t => t.id === taskId);
+      if (task) task.status = newStatus;
+
+      const existingIndex = pendingChanges.findIndex(c => c.taskId === taskId);
+      if (existingIndex >= 0) {
+        pendingChanges[existingIndex].newStatus = newStatus;
+      } else {
+        pendingChanges.push({ taskId: taskId, taskTitle: task.title, newStatus: newStatus });
+      }
+
+      updatePendingUI();
+      renderTasks();
+    }
+
+    function updatePendingUI() {
+      const countEl = document.getElementById("pending-count");
+      const btnEl = document.getElementById("btn-submit");
+      if (countEl) countEl.innerText = pendingChanges.length;
+      if (btnEl) btnEl.disabled = pendingChanges.length === 0;
+    }
+
+    async function submitBatchChanges() {
+      if (pendingChanges.length === 0) return;
+
+      showMessage("変更を反映中...", "#475569");
+      try {
+        const res = await fetch(GAS_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "applyBatchChanges",
+            userId: currentUser.id,
+            userEmail: currentUser.email,
+            userPrompt: currentUser.prompt,
+            changes: pendingChanges
+          })
+        });
+
+        const data = await res.json();
+        if (data.status === "success") {
+          pendingChanges = [];
+          updatePendingUI();
+          showMessage("反映とメール送信が完了しました！", "#16a34a");
+
+          // AIからの戻り値を吹き出しに表示！
+          if (data.aiFeedback) {
+            document.getElementById("ai-bubble-text").innerText = data.aiFeedback;
+          }
+
+          loadTasks();
+          if (currentUser.role === "admin") loadLogs();
+        } else {
+          showMessage("エラー: " + data.message, "#e11d48");
+        }
+      } catch (err) {
+        showMessage("反映に失敗しました", "#e11d48");
+      }
     }
 
     async function createTask() {
@@ -589,32 +681,14 @@
       }
     }
 
-    async function toggleTaskStatusLocal(taskId, currentStatus) {
-      const newStatus = currentStatus === "完了" ? "未完了" : "完了";
-      showMessage("更新中...", "#475569");
-      try {
-        const res = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "updateTaskStatus", userId: currentUser.id, taskId: taskId, status: newStatus })
-        });
-        const data = await res.json();
-        if (data.status === "success") {
-          showMessage("更新しました！", "#059669");
-          loadTasks();
-          if (currentUser.role === "admin") loadLogs();
-        }
-      } catch (err) {
-        showMessage("更新に失敗しました", "#e11d48");
-      }
-    }
-
     async function updateProfile() {
       const newUsername = document.getElementById("edit-username").value.trim();
       const newPassword = document.getElementById("edit-password").value.trim();
+      const newPrompt = document.getElementById("edit-prompt").value.trim();
+      const newAvatarUrl = document.getElementById("edit-avatar-url").value.trim();
 
       if (!newUsername || !newPassword) {
-        showMessage("ユーザー名とパスワードの両方を入力してください", "#e11d48");
+        showMessage("ユーザー名とパスワードを入力してください", "#e11d48");
         return;
       }
 
@@ -627,17 +701,27 @@
             action: "updateUserProfile",
             userId: currentUser.id,
             newUsername: newUsername,
-            newPassword: newPassword
+            newPassword: newPassword,
+            newPrompt: newPrompt,
+            newAvatarUrl: newAvatarUrl
           })
         });
         const data = await res.json();
 
         if (data.status === "success") {
           currentUser.username = data.updatedUsername;
+          currentUser.prompt = data.updatedPrompt;
+          currentUser.avatarUrl = data.updatedAvatarUrl;
+
           sessionStorage.setItem("user", JSON.stringify(currentUser));
           document.getElementById("user-info").innerText = `${currentUser.username} さん`;
           document.getElementById("edit-password").value = "";
-          showMessage("アカウント情報を更新しました！次回から新しい情報でログインしてください", "#059669");
+
+          if (currentUser.avatarUrl) {
+            document.getElementById("ai-avatar-img").src = currentUser.avatarUrl;
+          }
+
+          showMessage("アカウント情報を更新しました！", "#059669");
           if (currentUser.role === "admin") loadLogs();
         } else {
           showMessage(data.message, "#e11d48");
@@ -668,10 +752,7 @@
           data.logs.forEach(log => {
             const item = document.createElement("div");
             item.className = "log-item";
-
             const formattedTime = formatTimestamp(log.timestamp);
-
-            // log.username が取得できている場合はそちらを表示します
             const displayUser = log.username || log.userId;
             item.innerHTML = `<strong>[${formattedTime}]</strong> <span style="color: var(--text-muted);">(ユーザー: ${escapeHtml(displayUser)})</span> ${escapeHtml(log.action)}`;
             logListDiv.appendChild(item);
@@ -688,20 +769,12 @@
       if (!ts) return "";
       const d = new Date(ts);
       if (isNaN(d.getTime())) return ts;
-
       const pad = n => String(n).padStart(2, '0');
-      const YYYY = d.getFullYear();
-      const MM = pad(d.getMonth() + 1);
-      const DD = pad(d.getDate());
-      const hh = pad(d.getHours());
-      const mm = pad(d.getMinutes());
-      const ss = pad(d.getSeconds());
-
-      return `${YYYY}-${MM}-${DD} ${hh}:${mm}:${ss}`;
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
     }
 
     function showMessage(msg, color) {
-      const messageDiv = document.getElementById("message");
+      const messageDiv = document.getElementById("message-top");
       messageDiv.style.color = color;
       messageDiv.innerText = msg;
     }
@@ -713,69 +786,6 @@
     function toggleAccordion(elementId) {
       const target = document.getElementById(elementId);
       target.classList.toggle("hidden");
-    }
-    // 未反映の変更を保持する配列
-    let pendingChanges = [];
-
-    // タスクの状態切り替え（画面上だけ仮更新）
-    function toggleTaskStatusLocal(taskId, currentStatus) {
-      const newStatus = currentStatus === "完了" ? "未完了" : "完了";
-
-      // キャッシュ側を仮更新して再描画
-      const task = allTasksCache.find(t => t.id === taskId);
-      if (task) task.status = newStatus;
-
-      // キューに追加（すでに同じタスクの変更があれば上書き）
-      const existingIndex = pendingChanges.findIndex(c => c.taskId === taskId);
-      if (existingIndex >= 0) {
-        pendingChanges[existingIndex].newStatus = newStatus;
-      } else {
-        pendingChanges.push({ taskId: taskId, taskTitle: task.title, newStatus: newStatus });
-      }
-
-      updatePendingUI();
-      renderTasks();
-    }
-
-    // UI上の件数表示とボタンの有効化
-    function updatePendingUI() {
-      const countEl = document.getElementById("pending-count");
-      const btnEl = document.getElementById("btn-submit");
-      if (countEl) countEl.innerText = pendingChanges.length;
-      if (btnEl) btnEl.disabled = pendingChanges.length === 0;
-    }
-
-    // 一括反映ボタンを押した時の処理
-    async function submitBatchChanges() {
-      if (pendingChanges.length === 0) return;
-
-      showMessage("変更を反映中...", "#475569");
-      try {
-        const res = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            action: "applyBatchChanges",
-            userId: currentUser.id,
-            userEmail: currentUser.email,
-            userPrompt: currentUser.prompt, // カスタムプロンプトを追加
-            changes: pendingChanges
-          })
-        });
-
-        const data = await res.json();
-        if (data.status === "success") {
-          pendingChanges = [];
-          updatePendingUI();
-          showMessage("反映とメール送信が完了しました！", "#16a34a");
-          loadTasks();
-          if (currentUser.role === "admin") loadLogs();
-        } else {
-          showMessage("エラー: " + data.message, "#e11d48");
-        }
-      } catch (err) {
-        showMessage("反映に失敗しました", "#e11d48");
-      }
     }
   </script>
 </body>
